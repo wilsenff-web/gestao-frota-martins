@@ -1,5 +1,5 @@
 // Frota Martins PWA: apenas interface estática; dados e autenticação sempre online.
-const CACHE = 'frota-martins-shell-v2-relogio-tema';
+const CACHE = 'frota-martins-shell-v3-perfis';
 const SHELL = ['./','./index.html','./app.css','./online.css','./favicon.svg','./icons/icon-192.png','./icons/icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => Promise.allSettled(SHELL.map(url => cache.add(url)))));
