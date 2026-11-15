@@ -255,3 +255,17 @@ body.light .auth-card{background:linear-gradient(160deg,rgba(255,255,255,.98) 0%
 .detail-proof-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;padding:6px 0 12px}
 .detail-proof-actions .btn{max-width:100%;white-space:normal}
 @media(max-width:700px){#modal .overlay{padding-bottom:calc(20px + env(safe-area-inset-bottom))}#modal .overlay .modal{max-height:calc(100svh - 40px - env(safe-area-inset-bottom));overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(24px + env(safe-area-inset-bottom))}#modal .overlay .modal>.head{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:8px}#modal .overlay .modal>.head h2{font-size:17px}#modal .overlay .modal>.head .pill{font-size:10px}#modal .overlay .modal>.head .mini{min-width:40px}}
+
+/* iPhone instalado: manter o cabeçalho abaixo da barra de status/notch. */
+@supports (padding-top: env(safe-area-inset-top)) {
+ @media (display-mode: standalone) and (max-width: 700px) {
+  .driver-topbar {padding-top:calc(12px + env(safe-area-inset-top, 0px));}
+ }
+}
+
+/* iPhone PWA: cabeçalho abaixo da barra de status. */
+@supports (padding-top: env(safe-area-inset-top)) {
+ @media (display-mode: standalone) and (max-width: 700px) {
+  .driver-topbar {padding-top:calc(12px + env(safe-area-inset-top, 0px));}
+ }
+}
