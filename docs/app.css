@@ -323,3 +323,8 @@ button:disabled{opacity:.5;cursor:wait}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* Comprovantes: seletor de arquivo destacado em amarelo, inclusive no Android/iPhone */
+input[type="file"].control{cursor:pointer;max-width:100%;overflow:hidden}
+input[type="file"].control::file-selector-button{background:var(--gold);color:#17130a;border:0;border-radius:12px;padding:11px 14px;margin-right:12px;font-weight:750;cursor:pointer}
+input[type="file"].control::-webkit-file-upload-button{background:var(--gold);color:#17130a;border:0;border-radius:12px;padding:11px 14px;margin-right:12px;font-weight:750;cursor:pointer}
