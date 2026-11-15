@@ -267,3 +267,5 @@ body.light .auth-card{background:linear-gradient(160deg,rgba(255,255,255,.98) 0%
 }
 /* Ambos os portais rolam naturalmente; nao fixar o cabecalho do motorista. */
 @media(max-width:700px){body.driver-mode .driver-topbar{position:relative;top:auto}}
+
+.detail-delete-trip{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);text-align:right}.detail-delete-trip .mini{color:#d95454;border-color:rgba(217,84,84,.45)}
