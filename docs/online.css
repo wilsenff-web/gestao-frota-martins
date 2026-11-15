@@ -236,3 +236,16 @@ body.light .auth-card{background:linear-gradient(160deg,rgba(255,255,255,.98) 0%
 .auth-fields,.auth-fields .field,.password-control{min-width:0;max-width:100%}
 .auth-fields .control{width:100%;min-width:0;max-width:100%}
 @media(max-width:600px){.auth-shell{padding:14px}.auth-card{width:100%;padding:28px 20px}.auth-card h1{font-size:clamp(22px,6vw,28px)}.password-toggle{padding:8px 10px}}
+
+/* iPhone/PWA: comprovante recolhido e modal acima da barra inferior */
+.detail-proof>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;list-style:none;min-height:36px;margin-bottom:0;touch-action:manipulation}
+.detail-proof>summary::-webkit-details-marker{display:none}
+.detail-proof-toggle::after{content:'+';display:inline-grid;place-items:center;width:30px;height:30px;border:1px solid var(--line-strong);border-radius:9px;font-size:23px;font-weight:600;color:var(--gold)}
+.detail-proof[open] .detail-proof-toggle::after{content:'−'}
+.detail-proof-content{padding-top:12px;overflow-wrap:anywhere}
+.detail-proof-content .muted{overflow-wrap:anywhere}
+@media(max-width:700px){
+ .driver-mode .overlay{z-index:60;align-items:center;padding:12px 12px calc(18px + env(safe-area-inset-bottom))}
+ .driver-mode .overlay .modal{box-sizing:border-box;max-height:calc(100svh - 32px - env(safe-area-inset-bottom));overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+ .driver-mode .overlay .modal .foot{padding-bottom:10px}
+}
