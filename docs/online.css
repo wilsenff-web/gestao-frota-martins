@@ -137,7 +137,7 @@ body.light .auth-card{background:linear-gradient(160deg,rgba(255,255,255,.98) 0%
 
 @media(max-width:700px){
   .driver-mode #main{padding:16px 12px calc(90px + env(safe-area-inset-bottom))}
-  .driver-topbar{display:flex;position:sticky;top:0;z-index:5;align-items:center;gap:14px;padding:12px 14px;background:linear-gradient(180deg,var(--side) 0%,var(--bg) 100%);border-bottom:1px solid var(--line);min-height:68px}
+  .driver-topbar{display:flex;position:relative;top:auto;z-index:5;align-items:center;gap:14px;padding:12px 14px;background:linear-gradient(180deg,var(--side) 0%,var(--bg) 100%);border-bottom:1px solid var(--line);min-height:68px}
   .driver-brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0;font-size:14px;font-weight:650;line-height:1.2}
   .driver-brand>span:last-child{overflow-wrap:anywhere}
   .driver-brand strong{display:block;font-size:21px;letter-spacing:-.02em;color:var(--text-strong)}
@@ -264,3 +264,6 @@ body.light .auth-card{background:linear-gradient(160deg,rgba(255,255,255,.98) 0%
   body.driver-mode .driver-topbar {position:relative;top:auto;padding-top:12px;z-index:5}
  }
 }
+
+/* Rolagem natural do cabeçalho em todos os navegadores móveis, inclusive PWA iOS. */
+@media(max-width:700px){body.driver-mode #driver-topbar{position:relative!important;top:auto!important}}
