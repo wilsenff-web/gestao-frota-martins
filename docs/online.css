@@ -259,9 +259,11 @@ body.light .auth-card{background:linear-gradient(160deg,rgba(255,255,255,.98) 0%
 
 /* iPhone PWA: a barra de status nao deve cobrir o cabecalho ao rolar. */
 @supports (padding-top: env(safe-area-inset-top)) {
+ @supports (-webkit-touch-callout: none) {
  @media (display-mode: standalone) and (max-width:700px) {
   #application {padding-top:env(safe-area-inset-top, 0px)}
   body.driver-mode .driver-topbar {position:relative;top:auto;padding-top:12px;z-index:5}
+ }
  }
 }
 
@@ -270,6 +272,8 @@ body.light .auth-card{background:linear-gradient(160deg,rgba(255,255,255,.98) 0%
 
 /* Administrador no iPhone: reservar altura da barra de status mesmo quando
    o WebKit retorna safe-area-inset-top igual a zero no atalho instalado. */
-@media (display-mode:standalone) and (max-width:700px){
- body:not(.driver-mode) #application{padding-top:max(env(safe-area-inset-top, 0px), 54px)}
+@supports (-webkit-touch-callout: none) {
+ @media (display-mode:standalone) and (max-width:700px){
+  body:not(.driver-mode) #application{padding-top:max(env(safe-area-inset-top, 0px), 54px)}
+ }
 }
