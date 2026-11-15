@@ -262,3 +262,10 @@ body.light .auth-card{background:linear-gradient(160deg,rgba(255,255,255,.98) 0%
   .driver-topbar {padding-top:calc(12px + env(safe-area-inset-top, 0px));}
  }
 }
+
+/* iPhone PWA: cabeçalho abaixo da barra de status. */
+@supports (padding-top: env(safe-area-inset-top)) {
+ @media (display-mode: standalone) and (max-width: 700px) {
+  .driver-topbar {padding-top:calc(12px + env(safe-area-inset-top, 0px));}
+ }
+}
