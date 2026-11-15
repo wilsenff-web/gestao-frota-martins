@@ -1,19 +1,13 @@
-// Frota Martins PWA: apenas interface estática; dados e autenticação sempre online.
-const CACHE = 'frota-martins-shell-v3-perfis';
-const SHELL = ['./','./index.html','./app.css','./online.css','./favicon.svg','./icons/icon-192.png','./icons/icon-512.png'];
-self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => Promise.allSettled(SHELL.map(url => cache.add(url)))));
-  self.skipWaiting();
-});
-self.addEventListener('activate', event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('frota-martins-shell-') && key !== CACHE).map(key => caches.delete(key)))));
-  self.clients.claim();
-});
-self.addEventListener('fetch', event => {
-  const req = event.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
-  if (req.mode === 'navigate') {
-    event.respondWith(fetch(req).catch(() => caches.match('./index.html')));
-  }
-  // Outros arquivos e todas as chamadas Supabase permanecem em rede normal.
+// Frota Martins: atualizações sempre pela rede; nunca guardar HTML/JS/CSS antigos.
+// Supabase, sessão e dados continuam sob as regras normais da aplicação.
+const CACHE='frota-martins-shell-v4-ios-refresh';
+self.addEventListener('install',event=>{event.waitUntil(Promise.resolve());self.skipWaiting()});
+self.addEventListener('activate',event=>{event.waitUntil((async()=>{for(const key of await caches.keys()){if(key.startsWith('frota-martins-shell-'))await caches.delete(key)}await self.clients.claim()})())});
+self.addEventListener('fetch',event=>{
+ const req=event.request;
+ if(req.method!=='GET'||new URL(req.url).origin!==self.location.origin)return;
+ // Navegação e arquivos do app nunca são servidos do cache do PWA.
+ if(req.mode==='navigate'||/\\.(?:html|js|css)(?:$|\\?)/i.test(new URL(req.url).pathname)){
+  event.respondWith(fetch(req,{cache:'no-store'}));
+ }
 });
