@@ -234,11 +234,11 @@ document.addEventListener('click',e=>{
  button.textContent=visible?'Ocultar':'Mostrar';button.setAttribute('aria-pressed',String(visible));
  button.setAttribute('aria-label',(visible?'Ocultar ':'Mostrar ')+button.dataset.passwordLabel);
 });
-const api=window.supabase.createClient(window.MARTINS_CONFIG.url,window.MARTINS_CONFIG.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'martins-online-auth'}});
+const api=window.supabase.createClient(window.MARTINS_CONFIG.url,window.MARTINS_CONFIG.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'martins-online-auth-'+(location.pathname.match(/\/(adm|motorista)\/?(?:index\.html)?$/)?.[1]||'geral')}});
 let myProfile=null,sessionUser=null,cloudSnapshot=null,recordVersions=new Map(),profiles=[],saving=false,loadingRemote=false,subscription=null;
 const kinds=['motoristas','veiculos','viagens','receitas','despesas','pagamentos','pendencias','baixas','manutencoes','planos_manutencao','metas_km'];
 const isDriver=()=>myProfile?.role==='motorista',clone=v=>JSON.parse(JSON.stringify(v));
-const accessPortal=location.pathname.replace(/\/+$/,'').split('/').pop();
+const accessPortal=location.pathname.match(/\/(adm|motorista)(?:\/|\/index\.html)?$/)?.[1]||'geral';
 const portalRoleMismatch=p=>accessPortal==='adm'&&p?.role!=='admin'||accessPortal==='motorista'&&p?.role!=='motorista';
 async function rejectWrongPortal(){await api.auth.signOut();sessionUser=null;myProfile=null;authScreen('login',accessPortal==='adm'?'Este acesso é exclusivo do administrador. Abra o link do motorista.':'Este acesso é exclusivo dos motoristas. Abra o link do administrador.');}
 
