@@ -267,3 +267,9 @@ body.light .auth-card{background:linear-gradient(160deg,rgba(255,255,255,.98) 0%
 
 /* Rolagem natural do cabeçalho em todos os navegadores móveis, inclusive PWA iOS. */
 @media(max-width:700px){body.driver-mode #driver-topbar{position:relative!important;top:auto!important}}
+
+/* Administrador no iPhone: reservar altura da barra de status mesmo quando
+   o WebKit retorna safe-area-inset-top igual a zero no atalho instalado. */
+@media (display-mode:standalone) and (max-width:700px){
+ body:not(.driver-mode) #application{padding-top:max(env(safe-area-inset-top, 0px), 54px)}
+}
