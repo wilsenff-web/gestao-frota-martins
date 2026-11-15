@@ -7,7 +7,7 @@ self.addEventListener('fetch',event=>{
  const req=event.request;
  if(req.method!=='GET'||new URL(req.url).origin!==self.location.origin)return;
  // Navegação e arquivos do app nunca são servidos do cache do PWA.
- if(req.mode==='navigate'||/\\.(?:html|js|css)(?:$|\\?)/i.test(new URL(req.url).pathname)){
+ if(req.mode==='navigate'||/\.(?:html|js|css)$/i.test(new URL(req.url).pathname)){
   event.respondWith(fetch(req,{cache:'no-store'}));
  }
 });
