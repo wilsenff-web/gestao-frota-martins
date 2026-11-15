@@ -22,6 +22,12 @@ function statusText(s){
  el.textContent=(offline?'🔴 ':busy?'🟡 ':'🟢 ')+s;
  el.setAttribute('role','status');el.setAttribute('aria-live','polite');
  el.dataset.connection=offline?'offline':busy?'busy':'online';
+ const driverLabel=document.querySelector('[data-driver-connection]');
+ if(driverLabel){
+  driverLabel.textContent=offline?'Sem conexão com o banco':busy?'Atualizando banco…':/Banco atualizado às/.test(s)?s.replace(/^Online · /,'').replace(/ · (Motorista|Administrador)$/,''):'Online';
+  const dot=driverLabel.parentElement?.querySelector('i');
+  if(dot)dot.style.background=offline?'#ef4444':busy?'#f5b900':'#22c55e';
+ }
 }
 function syncTimeLabel(){
  return new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit'}).format(new Date());
