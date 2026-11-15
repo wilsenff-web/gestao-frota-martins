@@ -261,6 +261,6 @@ body.light .auth-card{background:linear-gradient(160deg,rgba(255,255,255,.98) 0%
 @supports (padding-top: env(safe-area-inset-top)) {
  @media (display-mode: standalone) and (max-width:700px) {
   body.driver-mode #application {padding-top:env(safe-area-inset-top, 0px)}
-  body.driver-mode .driver-topbar {position:sticky;top:env(safe-area-inset-top, 0px);padding-top:12px;z-index:30}
+  body.driver-mode .driver-topbar {position:relative;top:auto;padding-top:12px;z-index:5}
  }
 }
