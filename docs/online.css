@@ -435,3 +435,48 @@ body:not(.light) .trip-card-admin-active .trip-card-action button{background:#ff
 @media(min-width:701px) and (max-width:1600px){.trip-card.trip-card-admin{grid-template-columns:42px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)}.trip-card-admin .trip-card-avatar{grid-column:1;grid-row:1}.trip-card-admin .trip-card-identity{grid-column:2/4;grid-row:1}.trip-card-admin .trip-card-journey{grid-column:1/-1;grid-row:2}.trip-card-admin .trip-card-metrics{grid-column:1/-1;grid-row:3}.trip-card-admin .trip-card-payment{grid-column:1/3;grid-row:4;align-items:flex-start;text-align:left}.trip-card-admin .trip-card-action{grid-column:3/5;grid-row:4;justify-self:end;min-width:155px}.trip-card-admin-active .trip-card-action{justify-self:end}}
 @media(max-width:700px){.trip-card.trip-card-admin .trip-card-metrics{grid-column:1/-1;grid-row:3;gap:5px}.trip-card.trip-card-admin .trip-card-metric{min-height:77px;padding:7px 3px;gap:6px}.trip-card.trip-card-admin .trip-card-metric>span{font-size:clamp(9px,2.6vw,12px);line-height:1.15}.trip-card.trip-card-admin .trip-card-metric strong{font-size:clamp(11px,3.4vw,16px);line-height:1.15}.trip-card.trip-card-admin .trip-card-metric .trip-card-icon{width:13px;height:13px;flex-basis:13px}}
 @media(max-width:360px){.trip-card.trip-card-admin .trip-card-metric>span{font-size:9px}.trip-card.trip-card-admin .trip-card-metric strong{font-size:11px}}
+
+/* Layout final dos cartões ADM: desktop horizontal e celular compacto */
+@media(min-width:901px){
+.trip-card.trip-card-admin{display:grid!important;grid-template-columns:42px minmax(125px,1.25fr) minmax(125px,1.15fr) minmax(270px,2.6fr) minmax(95px,.85fr) minmax(125px,1.05fr)!important;grid-template-rows:auto!important;gap:clamp(6px,.75vw,12px)!important;align-items:center!important;padding:14px 12px!important;min-height:unset!important}
+.trip-card.trip-card-admin>.trip-card-avatar{grid-column:1!important;grid-row:1!important}
+.trip-card.trip-card-admin>.trip-card-identity{grid-column:2!important;grid-row:1!important}
+.trip-card.trip-card-admin>.trip-card-journey{grid-column:3!important;grid-row:1!important;border-top:0!important;padding-top:0!important}
+.trip-card.trip-card-admin>.trip-card-metrics{grid-column:4!important;grid-row:1!important}
+.trip-card.trip-card-admin>.trip-card-payment{grid-column:5!important;grid-row:1!important;align-items:center!important;text-align:center!important}
+.trip-card.trip-card-admin>.trip-card-action{grid-column:6!important;grid-row:1!important;justify-self:stretch!important;min-width:0!important;width:100%!important}
+.trip-card.trip-card-admin .trip-card-metric{min-height:88px!important;padding:8px 4px!important}
+.trip-card.trip-card-admin .trip-card-metric strong{font-size:clamp(13px,1.3vw,18px)!important}
+.trip-card.trip-card-admin .trip-card-metric>span{font-size:clamp(10px,1vw,13px)!important}
+.trip-card.trip-card-admin .trip-card-action button{max-width:100%!important}
+}
+@media(min-width:901px) and (max-width:1120px){
+.trip-card.trip-card-admin{grid-template-columns:36px minmax(115px,1.2fr) minmax(112px,1.1fr) minmax(255px,2.5fr) minmax(85px,.8fr) minmax(120px,1fr)!important;gap:6px!important;padding:11px 8px!important}
+.trip-card.trip-card-admin .trip-card-metrics{gap:4px!important}
+.trip-card.trip-card-admin .trip-card-metric{padding:6px 2px!important}
+}
+@media(min-width:701px) and (max-width:900px){
+.trip-card.trip-card-admin{grid-template-columns:42px minmax(0,1fr) minmax(0,1fr)!important;gap:9px!important}
+.trip-card.trip-card-admin>.trip-card-avatar{grid-column:1!important;grid-row:1!important}
+.trip-card.trip-card-admin>.trip-card-identity{grid-column:2/-1!important;grid-row:1!important}
+.trip-card.trip-card-admin>.trip-card-journey{grid-column:1/-1!important;grid-row:2!important}
+.trip-card.trip-card-admin>.trip-card-metrics{grid-column:1/-1!important;grid-row:3!important}
+.trip-card.trip-card-admin>.trip-card-payment{grid-column:1/-1!important;grid-row:4!important}
+.trip-card.trip-card-admin>.trip-card-action{grid-column:1/-1!important;grid-row:5!important;justify-self:stretch!important;width:100%!important}
+}
+@media(max-width:700px){
+.trip-card.trip-card-admin{display:grid!important;grid-template-columns:35px minmax(0,1fr)!important;grid-template-rows:repeat(5,auto)!important;gap:5px 7px!important;padding:9px!important;min-height:0!important}
+.trip-card.trip-card-admin>.trip-card-avatar{grid-column:1!important;grid-row:1!important;width:33px!important;height:33px!important}
+.trip-card.trip-card-admin>.trip-card-identity{grid-column:2!important;grid-row:1!important}
+.trip-card.trip-card-admin>.trip-card-journey{grid-column:1/-1!important;grid-row:2!important;border-top:0!important;padding:3px 0 0!important;gap:3px!important}
+.trip-card.trip-card-admin>.trip-card-metrics{grid-column:1/-1!important;grid-row:3!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important}
+.trip-card.trip-card-admin .trip-card-metric{min-height:58px!important;gap:3px!important;padding:4px 2px!important;border-radius:9px!important}
+.trip-card.trip-card-admin .trip-card-metric>span{font-size:clamp(9px,2.6vw,11px)!important;line-height:1.05!important;gap:2px!important}
+.trip-card.trip-card-admin .trip-card-metric strong{font-size:clamp(11px,3.5vw,15px)!important;line-height:1.1!important}
+.trip-card.trip-card-admin .trip-card-metric .trip-card-icon{width:12px!important;height:12px!important;flex-basis:12px!important;display:inline-block!important}
+.trip-card.trip-card-admin>.trip-card-payment{grid-column:1/-1!important;grid-row:4!important;display:flex!important;flex-direction:row!important;justify-content:space-between!important;align-items:center!important;text-align:left!important;gap:5px!important;padding:2px 0!important}
+.trip-card.trip-card-admin>.trip-card-action{grid-column:1/-1!important;grid-row:5!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-self:stretch!important;width:100%!important;gap:4px!important;min-width:0!important}
+.trip-card.trip-card-admin .trip-card-action button{width:100%!important;max-width:100%!important;min-height:29px!important;padding:5px 8px!important;margin:0!important;font-size:12px!important;line-height:1.15!important;border-radius:999px!important}
+.trip-card.trip-card-admin .trip-card-identity,.trip-card.trip-card-admin .trip-card-journey{font-size:clamp(11px,3vw,13px)!important}
+.trip-card.trip-card-admin .trip-card-payment>strong{font-size:14px!important}
+}
