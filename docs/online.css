@@ -378,3 +378,11 @@ body.light .trip-card-journey{border-color:#dad6cc}
 body.light .trip-card-km{border-color:#dad6cc}
 @media(min-width:701px) and (max-width:1150px){body.light .trip-card-journey{border-color:#dad6cc}}
 @media(max-width:700px){body.light .trip-card-journey{border-color:#dad6cc}}
+
+/* Seletor de condutor eventual: mesma grade do formulário nos dois temas */
+#form [data-driver-registered],#form [data-driver-occasional]{min-width:0}
+#form [data-driver-registered]>.field,#form [data-driver-occasional]>.field{width:100%}
+#form [data-driver-registered][hidden],#form [data-driver-occasional][hidden]{display:none!important}
+#form [name="condutor_tipo"]{font-weight:650}
+body.light #form [name="condutor_tipo"]{color:var(--text);background:var(--surface)}
+@media(max-width:700px){#form [data-driver-registered],#form [data-driver-occasional]{grid-column:1/-1}}
