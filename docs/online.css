@@ -358,3 +358,23 @@ body.light .trip-card{background:linear-gradient(135deg,#242528,#111215);color:#
 .trip-card-status{white-space:normal;text-align:center}
 .trip-card-action .btn{max-width:100%;white-space:normal}
 }
+
+/* Cartões de viagens seguem o tema claro/escuro em todos os dispositivos */
+body.light .trip-card{
+  background:linear-gradient(135deg,#fff,#f8f7f3);
+  color:#1b1c20;
+  border-color:#e0a900;
+  box-shadow:0 3px 14px rgba(50,42,0,.10);
+}
+body.light .trip-card-title,body.light .trip-card-line,
+body.light .trip-card-km strong,body.light .trip-card-payment>strong{color:#1b1c20}
+body.light .trip-card-km>span{color:#45474e}
+body.light .trip-card-final>span{color:#996c00}
+body.light .trip-card-final strong{background:#f5c400;color:#171400}
+body.light .trip-card-icon{color:#bb8500}
+body.light .trip-card-avatar{background:#f5c400;color:#171400}
+body.light .trip-card-status{color:#805b00;border-color:#c99800;background:#fff8dc}
+body.light .trip-card-journey{border-color:#dad6cc}
+body.light .trip-card-km{border-color:#dad6cc}
+@media(min-width:701px) and (max-width:1150px){body.light .trip-card-journey{border-color:#dad6cc}}
+@media(max-width:700px){body.light .trip-card-journey{border-color:#dad6cc}}
