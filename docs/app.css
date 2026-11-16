@@ -328,3 +328,21 @@ button:disabled{opacity:.5;cursor:wait}
 input[type="file"].control{cursor:pointer;max-width:100%;overflow:hidden}
 input[type="file"].control::file-selector-button{background:var(--gold);color:#17130a;border:0;border-radius:12px;padding:11px 14px;margin-right:12px;font-weight:750;cursor:pointer}
 input[type="file"].control::-webkit-file-upload-button{background:var(--gold);color:#17130a;border:0;border-radius:12px;padding:11px 14px;margin-right:12px;font-weight:750;cursor:pointer}
+
+/* ADM — formulários responsivos de viagens (iOS, Android e desktop) */
+#modal .overlay{box-sizing:border-box;padding:12px;max-width:100vw;overflow-x:hidden}
+#modal .modal{box-sizing:border-box;width:min(100%,680px);max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow-x:hidden;overflow-y:auto}
+#modal .modal form,#modal .modal .grid,#modal .modal .field{min-width:0;max-width:100%;box-sizing:border-box}
+#modal .modal .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#modal .modal .field.wide{grid-column:1/-1}
+#modal .modal input,#modal .modal select,#modal .modal textarea{box-sizing:border-box;min-width:0;max-width:100%;width:100%}
+#modal .modal input[type=file]{width:100%;min-width:0;overflow:hidden}
+#modal .modal .foot{display:flex;flex-wrap:wrap;gap:10px}
+.trip-card-action{display:flex;gap:7px;flex-wrap:wrap;min-width:0}
+@media(max-width:700px){
+ #modal .overlay{padding:8px}
+ #modal .modal{width:100%;max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);padding:16px}
+ #modal .modal .grid{grid-template-columns:minmax(0,1fr)}
+ #modal .modal .field.wide{grid-column:auto}
+ #modal .modal .foot>*{min-width:0;flex:1 1 120px}
+}
