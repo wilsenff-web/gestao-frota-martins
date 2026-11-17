@@ -10,7 +10,7 @@ body.light #martins-clock .time{color:#1a1815;}
 body:not(.light) #martins-clock{background:#0d0d10;color:#fff;border-bottom:1px solid rgba(255,255,255,.06);}
 body:not(.light) #martins-clock .date{color:#f5bd00;}
 body:not(.light) #martins-clock .time{color:#fff;}
-</style></head><body><a class="skip-link" href="#main">Pular para o conteúdo</a><div id="auth-root"></div><div id="application" hidden><div id="adm-topbar" aria-label="Cabeçalho da administração"><div id="adm-topbar-brand"></div><div id="adm-topbar-status"></div><div id="adm-topbar-clock"></div></div><div id="martins-clock" aria-label="Data e hora de Brasília"><div class="date" id="martins-date"></div><div class="time" id="martins-time"></div></div><div class="banner" id="online-status">Conectando…</div><button id="app-refresh-control" type="button" aria-label="Atualizar aplicativo">↻ Atualizar aplicativo</button><div class="app"><aside><div class="brand" id="app-brand"><b>🚚</b><span>Gestão de Frota Martins</span></div><div id="nav"></div><div id="account-nav"></div></aside><main id="main"></main></div><div class="mobile" id="mobile"></div><div id="modal"></div></div><div id="toast-status" role="status" aria-live="polite"></div>
+</style></head><body><a class="skip-link" href="#main">Pular para o conteúdo</a><div id="auth-root"></div><div id="application" hidden><div id="adm-topbar" aria-label="Cabeçalho da administração"><div id="adm-topbar-brand"></div><div id="adm-topbar-status"></div><div id="adm-topbar-clock"></div></div><div id="martins-clock" aria-label="Data e hora de Brasília"><div class="date" id="martins-date"></div><div class="time" id="martins-time"></div></div><div class="banner" id="online-status">Conectando…</div><button id="app-refresh-control" type="button" aria-label="Atualizar aplicativo">↻ Atualizar aplicativo</button><span id="app-version-label" aria-label="Versão do aplicativo">Versão v2026.11.17.3</span><div class="app"><aside><div class="brand" id="app-brand"><b>🚚</b><span>Gestão de Frota Martins</span></div><div id="nav"></div><div id="account-nav"></div></aside><main id="main"></main></div><div class="mobile" id="mobile"></div><div id="modal"></div></div><div id="toast-status" role="status" aria-live="polite"></div>
 <script src="vendor/supabase.js"></script>
 <script src="config.js"></script>
 <script src="app.js?v=20261117-adm-mobile-brand-1"></script>
@@ -39,7 +39,7 @@ body:not(.light) #martins-clock .time{color:#fff;}
 <script>
 /* Verificação de versão para PWA instalado (PC, Android e iOS). */
 (function(){
- const BUILD='20261117-mobile-sync-2',BASE='./sw.js',KEY='frota_martins_build';
+ const BUILD='20261117-release-3',BASE='./sw.js',KEY='frota_martins_build';
  let checking=false,reloading=false,lastCheck=0;
  const stored=()=>{try{return localStorage.getItem(KEY)}catch(_){return null}};
  const save=v=>{try{localStorage.setItem(KEY,v)}catch(_){}};
@@ -77,6 +77,8 @@ body:not(.light) #martins-clock .time{color:#fff;}
 <style>
 #app-refresh-control{display:inline-flex;align-items:center;justify-content:center;gap:6px;margin:6px 10px;padding:7px 12px;border:1px solid #c99b22;border-radius:12px;background:#ffcc24;color:#221900;font:700 13px system-ui,-apple-system,sans-serif;cursor:pointer;vertical-align:middle}
 #app-refresh-control:disabled{opacity:.7;cursor:wait}
+#app-version-label{display:inline-flex;align-items:center;vertical-align:middle;margin:6px 10px 6px 2px;padding:6px 9px;border:1px solid var(--line-strong,rgba(180,160,100,.3));border-radius:10px;color:var(--text-strong,#fff);font:600 12px system-ui,-apple-system,sans-serif;white-space:nowrap}
+@media(max-width:700px){#app-version-label{font-size:11px;margin-left:0;padding:5px 7px}}
 </style>
 <script>
 (function(){
