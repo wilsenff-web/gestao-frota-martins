@@ -102,6 +102,13 @@ body.driver-mode #application>.app aside #driver-update-group #app-refresh-contr
 body.driver-mode #application>.app aside #driver-update-group #app-version-label{display:block!important;position:static!important;margin:0!important;padding:4px 6px!important;font-size:11px!important;text-align:center!important;color:var(--text-strong,#fff)!important}
 body.driver-mode #application>.app aside{overflow-y:auto!important}
 }
+
+@media(min-width:901px){
+body.driver-mode #application>.app aside #account-nav .account-label,
+body.driver-mode #application>.app aside #account-nav [data-online="password"]{display:none!important}
+body.driver-mode #application>.app aside #driver-update-group [data-online="signout"]{display:block!important;position:static!important;width:100%!important;margin:0!important;padding:10px 12px!important;text-align:left!important;border-radius:10px!important;color:var(--muted)!important}
+body.driver-mode #application>.app aside #driver-update-group [data-online="signout"]:hover{background:var(--gold-soft)!important;color:var(--text-strong)!important}
+}
 </style>
 <script>
 (function(){
@@ -113,14 +120,17 @@ body.driver-mode #application>.app aside{overflow-y:auto!important}
   if(window.innerWidth>900&&document.body.classList.contains('driver-mode')&&aside&&account){
    if(group.parentElement!==aside||group.nextElementSibling!==account)aside.insertBefore(group,account);
    group.append(button,version);
+   const exit=account.querySelector('[data-online="signout"]');if(exit)group.appendChild(exit);
   }else if(group.contains(button)){
    app.insertBefore(button,app.querySelector('.app'));
    app.insertBefore(version,app.querySelector('.app'));
+   const exit=group.querySelector('[data-online="signout"]');if(exit){const account=app.querySelector('.app aside #account-nav');if(account)account.appendChild(exit)}
    group.remove();
   }
  };
  move();window.addEventListener('resize',move);
  new MutationObserver(move).observe(document.body,{attributes:true,attributeFilter:['class']});
+ const account=app.querySelector('.app aside #account-nav');if(account)new MutationObserver(move).observe(account,{childList:true});
 })();
 </script>
 </body></html>
