@@ -468,3 +468,36 @@ body.light:not(.driver-mode) #adm-topbar-clock #martins-clock{color:#251d0a;back
 body.light:not(.driver-mode) #adm-topbar-clock #martins-clock .time{color:#251d0a}
 }
 @media(min-width:901px) and (max-width:1200px){body:not(.driver-mode) #adm-topbar{grid-template-columns:minmax(270px,1fr) minmax(195px,.8fr) minmax(210px,.8fr);gap:7px;padding:10px 14px}body:not(.driver-mode) #adm-topbar-brand .brand{font-size:21px}}
+
+/* Driver visual refresh — preserves original driver routes and actions */
+.driver-mode .driver-home-heading{display:flex;align-items:center;gap:12px;margin:0 0 18px;font-size:clamp(23px,2.2vw,31px);font-weight:850}
+.driver-mode .driver-home-heading .driver-icon{width:31px;height:31px;color:#f5bd00;stroke-width:2.6}
+.driver-mode .driver-header-meta{display:flex;align-items:center;gap:14px;font-size:12px;font-weight:700;min-width:0}
+.driver-mode .driver-header-online{color:#e5b900}
+.driver-mode .driver-header-role{color:var(--text-strong)}
+.driver-mode .driver-header-date{color:var(--gold);font-size:11px}
+.driver-mode .driver-header-time{border:1px solid var(--gold-line);border-radius:12px;padding:8px 12px;font-size:19px;color:var(--text-strong);font-variant-numeric:tabular-nums}
+.driver-mode .driver-stats .driver-stat{border:1px solid #d6a900;box-shadow:inset 0 -3px 0 rgba(245,189,0,.25),0 3px 12px rgba(0,0,0,.1)}
+.driver-mode .driver-stats .driver-stat:first-child{border-color:#168be2;box-shadow:inset 0 -3px 0 rgba(22,139,226,.4)}
+.driver-mode .driver-stats .driver-stat:nth-child(2){border-color:#31aa59;box-shadow:inset 0 -3px 0 rgba(49,170,89,.4)}
+.driver-mode .driver-stats .driver-icon,.driver-mode .driver-due .driver-icon{color:#e4b400;stroke-width:2.5}
+.driver-mode .driver-due{border:1px solid #e2ac20;box-shadow:inset 0 -3px 0 rgba(245,189,0,.3)}
+.driver-mode .driver-profile{border:1px solid var(--gold-line);border-radius:18px;box-shadow:inset 0 -3px 0 rgba(245,189,0,.25)}
+.driver-mode .driver-section-title{color:var(--text-strong)}
+@media(min-width:901px){
+.driver-mode #driver-topbar{display:flex;align-items:center;gap:18px;justify-content:space-between;min-height:104px;padding:12px 22px;border-bottom:2px solid #e5b700;background:linear-gradient(115deg,#100d09,#08090c 65%,#15100a)}
+.driver-mode #driver-topbar .driver-brand{flex:1;min-width:0;font-size:clamp(18px,2vw,28px);font-weight:850}
+.driver-mode #driver-topbar .driver-brand-mark{width:60px;height:60px}
+.driver-mode #driver-topbar .driver-header-meta{flex:0 1 auto}
+.driver-mode #app-refresh-control{position:fixed;left:14px;bottom:16px;z-index:20;max-width:210px}
+}
+@media(max-width:900px){
+.driver-mode .driver-header-meta{gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.driver-mode .driver-header-role{display:none}
+.driver-mode .driver-header-date{display:none}
+.driver-mode .driver-header-time{font-size:13px;padding:4px 7px}
+.driver-mode .driver-header-online{font-size:10px}
+.driver-mode .driver-home-heading{font-size:22px}
+}
+@media(max-width:480px){.driver-mode #driver-topbar .driver-header-meta{flex:0 0 auto}.driver-mode .driver-header-time{font-size:12px}.driver-mode .driver-header-online{font-size:9px}}
+body.light.driver-mode #driver-topbar{background:var(--bg-elevated)}
