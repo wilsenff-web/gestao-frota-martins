@@ -577,3 +577,16 @@ body.driver-mode #driver-topbar .driver-brand-mark{background:linear-gradient(14
 body.driver-mode #driver-topbar .driver-brand-title{letter-spacing:-.035em!important}
 body.driver-mode #driver-topbar .driver-header-online{color:#39d57a!important}
 @media(max-width:900px){body.driver-mode #driver-topbar .driver-brand-mark .driver-icon{width:27px!important;height:27px!important}}
+
+/* ADM mobile: identidade aprovada visível sem alterar o painel Motorista. */
+@media(max-width:900px){
+body:not(.driver-mode) #application:not([hidden])>#adm-topbar{display:flex;align-items:center;min-height:64px;padding:9px 14px;gap:10px;background:linear-gradient(110deg,#100d09,#08090c 65%,#15100a);border-bottom:2px solid #e5b700;box-sizing:border-box}
+body:not(.driver-mode) #adm-topbar-brand{min-width:0;flex:1}
+body:not(.driver-mode) #adm-topbar-brand .brand{display:flex;align-items:center;gap:10px;min-width:0;margin:0;padding:0;color:#fff;font-size:clamp(15px,4vw,21px);font-weight:800;line-height:1.12;text-transform:uppercase}
+body:not(.driver-mode) #adm-topbar-brand .brand span{min-width:0;overflow-wrap:break-word}
+body:not(.driver-mode) #adm-topbar-brand .brand-photo-button{flex:0 0 auto;display:grid;place-items:center;border:1px solid #e5b700;border-radius:10px;padding:0;background:#16120a;overflow:hidden}
+body:not(.driver-mode) #adm-topbar-brand .brand-photo,body:not(.driver-mode) #adm-topbar-brand .brand b{display:block;width:44px;height:44px;object-fit:cover;border-radius:9px}
+body:not(.driver-mode) #adm-topbar-status,body:not(.driver-mode) #adm-topbar-clock{display:none}
+body.light:not(.driver-mode) #application:not([hidden])>#adm-topbar{background:linear-gradient(110deg,#f5f0de,#fff 65%,#f9edca)}
+body.light:not(.driver-mode) #adm-topbar-brand .brand{color:#251d0a}
+}
