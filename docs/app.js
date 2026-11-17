@@ -331,7 +331,7 @@ function driverGoalCards(done){
   const trips=done.filter(v=>usage(v)===m.tipo_uso);
   const km=trips.reduce((total,v)=>total+tripKm(v),0);
   const reference=km*(+m.valor_km||0);
-  return '<article class="driver-goal-card"><strong class="driver-goal-type">'+esc(m.tipo_uso)+'</strong><div class="driver-goal-metrics"><span>Referência: <b>'+money(m.valor_km)+'/km</b></span><span>KM concluídos: <b>'+km.toLocaleString('pt-BR')+' km</b></span><span>Valor de referência: <b>'+money(reference)+'</b></span></div><small>Acumulado das viagens concluídas deste tipo · não representa pagamento recebido</small></article>';
+  return '<article class="driver-goal-card"><strong class="driver-goal-type">'+esc(m.tipo_uso)+'</strong><div class="driver-goal-metrics"><span>Referência: <b>'+money(m.valor_km)+'/km</b></span><span>KM concluídos: <b>'+km.toLocaleString('pt-BR')+' km</b></span><span>Valor de referência: <b>'+money(reference)+'</b></span></div></article>';
  }).join('')+'</div></section>';
 }
 function driverHome(){const done=db.viagens.filter(v=>v.motorista_id===myProfile.motorista_id&&v.status==='Concluída'),due=db.pendencias.reduce((s,p)=>s+balance(p),0)+outstandingTrips().reduce((s,v)=>s+Math.max(0,(+v.valor||0)-paidTrip(v)),0),km=done.reduce((s,v)=>s+tripKm(v),0),active=newestTrips(db.viagens.filter(v=>v.motorista_id===myProfile.motorista_id&&v.status==='Em andamento'));
