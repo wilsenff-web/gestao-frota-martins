@@ -39,7 +39,7 @@ body:not(.light) #martins-clock .time{color:#fff;}
 <script>
 /* Verificação de versão para PWA instalado (PC, Android e iOS). */
 (function(){
- const BUILD='20261117-auto-update-1',BASE='./sw.js',KEY='frota_martins_build';
+ const BUILD='20261117-auto-update-1',BASE='../sw.js',KEY='frota_martins_build';
  let checking=false,reloading=false,lastCheck=0;
  const stored=()=>{try{return localStorage.getItem(KEY)}catch(_){return null}};
  const save=v=>{try{localStorage.setItem(KEY,v)}catch(_){}};
