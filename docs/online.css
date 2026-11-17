@@ -627,3 +627,15 @@ body.driver-mode #application>#mobile .driver-bottom-item .driver-icon{width:22p
 body.light.driver-mode #application>#mobile{background:rgba(255,255,255,.97)!important}
 body.driver-mode #application>#app-refresh-control{position:relative!important;left:auto!important;bottom:auto!important;top:auto!important;right:auto!important;margin:5px 12px!important;width:auto!important;max-width:max-content!important}
 }
+
+/* Metas individuais na Minha area do motorista, adaptadas a todos os tamanhos. */
+.driver-goals{margin:18px 0 16px;min-width:0}
+.driver-goals .driver-section-title{margin:0 0 12px}
+.driver-goals-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:12px}
+.driver-goal-card{min-width:0;display:flex;flex-direction:column;gap:12px;padding:17px;border:1px solid var(--gold-line);border-radius:18px;background:linear-gradient(150deg,var(--card),var(--bg-elevated));box-sizing:border-box}
+.driver-goal-type{color:var(--text-strong);font-size:16px;overflow-wrap:anywhere}
+.driver-goal-metrics{display:grid;gap:8px;color:var(--muted);font-size:13px}
+.driver-goal-metrics span{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px}
+.driver-goal-metrics b{color:var(--gold);font-size:15px;font-variant-numeric:tabular-nums}
+.driver-goal-card small{color:var(--muted);font-size:11px;line-height:1.45}
+@media(max-width:700px){.driver-goals-grid{grid-template-columns:1fr}.driver-goal-card{padding:14px}}
