@@ -570,3 +570,10 @@ body.driver-mode #driver-topbar .driver-brand-mark img{display:none!important}
 body.driver-mode #driver-topbar .driver-brand-title em{font-style:normal;color:#e5b700}
 body.driver-mode #driver-topbar .driver-brand-title strong{display:block}
 }
+
+/* Approved driver header identity and single visible sidebar update control */
+body.driver-mode #driver-topbar .driver-brand-mark .driver-icon{display:block!important;width:42px!important;height:42px!important;max-width:100%!important;max-height:100%!important;stroke:#ffd54a!important;stroke-width:1.7!important}
+body.driver-mode #driver-topbar .driver-brand-mark{background:linear-gradient(140deg,#08090c,#2b2105)!important;border-color:#e5b700!important}
+body.driver-mode #driver-topbar .driver-brand-title{letter-spacing:-.035em!important}
+body.driver-mode #driver-topbar .driver-header-online{color:#39d57a!important}
+@media(max-width:900px){body.driver-mode #driver-topbar .driver-brand-mark .driver-icon{width:27px!important;height:27px!important}}
