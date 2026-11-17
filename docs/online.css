@@ -537,3 +537,36 @@ body.driver-mode #driver-topbar .driver-brand{font-size:19px}
 body.driver-mode #application>#martins-clock{display:none!important}
 body.driver-mode #application>#app-refresh-control{position:relative;top:auto;left:auto;bottom:auto;margin:8px 12px}
 }
+
+/* Fix: prevent inherited logo/photo rules from breaking the driver header */
+@media(min-width:901px){
+body.driver-mode #application:not([hidden]){display:flex!important;flex-direction:column!important;min-height:100vh!important;padding:0!important;position:relative!important}
+body.driver-mode #application>#driver-topbar{display:flex!important;position:relative!important;top:auto!important;left:auto!important;right:auto!important;flex:0 0 100px!important;width:100%!important;height:100px!important;min-height:100px!important;max-height:100px!important;box-sizing:border-box!important;overflow:hidden!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;padding:12px 22px!important;margin:0!important;z-index:10!important}
+body.driver-mode #driver-topbar .driver-header-button[data-online="menu"]{display:none!important}
+body.driver-mode #driver-topbar .driver-brand{display:flex!important;align-items:center!important;flex:0 1 390px!important;min-width:0!important;max-width:390px!important;gap:12px!important;position:static!important;transform:none!important;margin:0!important;padding:0!important;font-size:24px!important;line-height:1!important}
+body.driver-mode #driver-topbar .driver-brand-mark{display:grid!important;place-items:center!important;flex:0 0 58px!important;width:58px!important;height:58px!important;max-width:58px!important;max-height:58px!important;overflow:hidden!important;border:1px solid #e6b900!important;border-radius:13px!important;background:#16120a!important;color:#ffd54a!important;font-size:33px!important;line-height:1!important}
+body.driver-mode #driver-topbar .driver-brand-mark img{display:none!important}
+body.driver-mode #driver-topbar .driver-brand-title{display:block!important;position:static!important;width:auto!important;min-width:0!important;max-width:310px!important;overflow:hidden!important;font-size:clamp(18px,2vw,26px)!important;font-weight:900!important;line-height:1.05!important;white-space:normal!important;overflow-wrap:normal!important;color:#fff!important;text-shadow:none!important}
+body.driver-mode #driver-topbar .driver-brand-title em{font-style:normal;color:#ffd54a}
+body.driver-mode #driver-topbar .driver-brand-title strong{display:block!important;font-size:.82em!important;color:#ffd54a!important}
+body.driver-mode #driver-topbar .driver-header-meta{display:flex!important;flex:1 1 auto!important;min-width:0!important;align-items:center!important;justify-content:flex-end!important;gap:clamp(8px,1.4vw,22px)!important;flex-wrap:nowrap!important}
+body.driver-mode #driver-topbar .driver-header-date{white-space:nowrap!important}
+body.driver-mode #driver-topbar .driver-theme{flex:0 0 auto!important;order:3}
+body.driver-mode #application>.app{display:grid!important;grid-template-columns:240px minmax(0,1fr)!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;position:relative!important;top:auto!important;margin:0!important}
+body.driver-mode #application>.app aside{grid-column:1!important;min-width:0!important}
+body.driver-mode #application>.app main{grid-column:2!important;min-width:0!important}
+body.driver-mode #application>#app-refresh-control{position:fixed!important;left:14px!important;bottom:16px!important;top:auto!important;z-index:30!important}
+}
+@media(min-width:901px) and (max-width:1150px){
+body.driver-mode #driver-topbar .driver-brand{flex-basis:260px!important}
+body.driver-mode #driver-topbar .driver-brand-mark{width:45px!important;height:45px!important;flex-basis:45px!important;font-size:26px!important}
+body.driver-mode #driver-topbar .driver-brand-title{font-size:19px!important}
+body.driver-mode #driver-topbar .driver-header-date{font-size:10px!important}
+body.driver-mode #driver-topbar .driver-header-role{font-size:11px!important}
+}
+@media(max-width:900px){
+body.driver-mode #driver-topbar .driver-brand-mark{overflow:hidden!important}
+body.driver-mode #driver-topbar .driver-brand-mark img{display:none!important}
+body.driver-mode #driver-topbar .driver-brand-title em{font-style:normal;color:#e5b700}
+body.driver-mode #driver-topbar .driver-brand-title strong{display:block}
+}
