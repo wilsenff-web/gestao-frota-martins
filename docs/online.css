@@ -606,3 +606,24 @@ body:not(.driver-mode) #application>#mobile{display:flex!important;position:fixe
 body:not(.driver-mode) #application>#mobile .nav{display:flex!important;flex:0 0 auto!important;min-width:108px!important;min-height:46px!important;align-items:center!important;justify-content:center!important;padding:6px 10px!important}
 body.light:not(.driver-mode) #application>#mobile{background:rgba(255,255,255,.97)!important}
 }
+
+/* Motorista: celulares na horizontal usam a navegacao inferior, nao o layout desktop. */
+@media (orientation:landscape) and (max-height:600px) and (max-width:1400px){
+body.driver-mode #application:not([hidden]){display:flex!important;flex-direction:column!important;min-height:100dvh!important;grid-template-columns:none!important;grid-template-rows:none!important;padding:0!important}
+body.driver-mode #application>#driver-topbar{display:flex!important;position:relative!important;flex:0 0 auto!important;width:100%!important;height:auto!important;min-height:48px!important;max-height:none!important;padding:5px 12px!important;gap:8px!important;box-sizing:border-box!important}
+body.driver-mode #driver-topbar .driver-brand{flex:1 1 auto!important;min-width:0!important;max-width:none!important;gap:8px!important}
+body.driver-mode #driver-topbar .driver-brand-mark{width:36px!important;height:36px!important;flex:0 0 36px!important}
+body.driver-mode #driver-topbar .driver-brand-mark .driver-icon{width:28px!important;height:28px!important}
+body.driver-mode #driver-topbar .driver-brand-title{font-size:clamp(13px,2vw,18px)!important;max-width:none!important}
+body.driver-mode #driver-topbar .driver-header-meta{flex:0 1 auto!important;gap:6px!important}
+body.driver-mode #driver-topbar .driver-header-date,body.driver-mode #driver-topbar .driver-header-role{display:none!important}
+body.driver-mode #driver-topbar .driver-header-time{font-size:12px!important;padding:3px 6px!important}
+body.driver-mode #application>.app{display:block!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;min-height:0!important;grid-template-columns:none!important;grid-column:auto!important;grid-row:auto!important}
+body.driver-mode #application>.app aside{display:none!important}
+body.driver-mode #application>.app main{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;grid-column:auto!important;padding:12px 16px calc(90px + env(safe-area-inset-bottom))!important;box-sizing:border-box!important}
+body.driver-mode #application>#mobile{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;position:fixed!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;z-index:60!important;gap:2px!important;min-height:54px!important;padding:5px 8px calc(5px + env(safe-area-inset-bottom))!important;overflow-x:auto!important;overflow-y:hidden!important;background:rgba(13,13,16,.97)!important;border-top:1px solid var(--gold-line)}
+body.driver-mode #application>#mobile .driver-bottom-item{display:flex!important;min-width:0!important;min-height:44px!important;align-items:center!important;justify-content:center!important;flex-direction:column!important;gap:2px!important;font-size:11px!important}
+body.driver-mode #application>#mobile .driver-bottom-item .driver-icon{width:22px!important;height:22px!important}
+body.light.driver-mode #application>#mobile{background:rgba(255,255,255,.97)!important}
+body.driver-mode #application>#app-refresh-control{position:relative!important;left:auto!important;bottom:auto!important;top:auto!important;right:auto!important;margin:5px 12px!important;width:auto!important;max-width:max-content!important}
+}
