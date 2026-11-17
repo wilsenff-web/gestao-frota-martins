@@ -94,4 +94,32 @@ body:not(.light) #martins-clock .time{color:#fff;}
  });
 })();
 </script>
+
+<style>
+@media(min-width:901px){
+body:not(.driver-mode) #application>.app aside #app-update-group{display:flex;flex-direction:column;gap:6px;align-items:stretch;padding:12px 14px 18px;margin-top:10px}
+body:not(.driver-mode) #application>.app aside #app-update-group #app-refresh-control{position:static!important;inset:auto!important;width:100%!important;max-width:none!important;min-height:40px!important;margin:0!important;box-sizing:border-box!important}
+body:not(.driver-mode) #application>.app aside #app-update-group #app-version-label{display:block!important;position:static!important;margin:0!important;padding:4px 6px!important;font-size:11px!important;text-align:center!important;color:var(--text-strong,#fff)!important}
+body:not(.driver-mode) #application>.app aside{overflow-y:auto!important}
+}
+</style>
+<script>
+(function(){
+ const app=document.getElementById('application'),button=document.getElementById('app-refresh-control'),version=document.getElementById('app-version-label');
+ if(!app||!button||!version)return;
+ const group=document.createElement('div');group.id='app-update-group';
+ const move=()=>{
+  const aside=app.querySelector('.app aside'),isAdmin=!(document.body.classList.contains('driver-mode'));
+  if(window.innerWidth>900&&isAdmin&&aside){
+   if(group.parentElement!==aside)aside.appendChild(group);
+   group.append(button,version);
+  }else if(group.contains(button)){
+   app.insertBefore(button,app.querySelector('.app'));
+   app.insertBefore(version,app.querySelector('.app'));
+   group.remove();
+  }
+ };
+ move();window.addEventListener('resize',move);new MutationObserver(move).observe(document.body,{attributes:true,attributeFilter:['class']});
+})();
+</script>
 </body></html>
