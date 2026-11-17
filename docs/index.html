@@ -111,7 +111,7 @@ body:not(.driver-mode) #application>.app aside{overflow-y:auto!important}
  const move=()=>{
   const aside=app.querySelector('.app aside'),isAdmin=!(document.body.classList.contains('driver-mode'));
   if(window.innerWidth>900&&isAdmin&&aside){
-   if(group.parentElement!==aside)aside.appendChild(group);
+   const account=aside.querySelector('#account-nav');if(account){if(group.parentElement!==aside||group.nextElementSibling!==account)aside.insertBefore(group,account)}else if(group.parentElement!==aside)aside.appendChild(group);
    group.append(button,version);
   }else if(group.contains(button)){
    app.insertBefore(button,app.querySelector('.app'));
