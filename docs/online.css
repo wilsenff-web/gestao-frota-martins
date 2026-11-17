@@ -590,3 +590,19 @@ body:not(.driver-mode) #adm-topbar-status,body:not(.driver-mode) #adm-topbar-clo
 body.light:not(.driver-mode) #application:not([hidden])>#adm-topbar{background:linear-gradient(110deg,#f5f0de,#fff 65%,#f9edca)}
 body.light:not(.driver-mode) #adm-topbar-brand .brand{color:#251d0a}
 }
+
+/* ADM em celulares deitados: manter a navegação acessível, mesmo com viewport largo. */
+@media (orientation:landscape) and (max-height:600px) and (max-width:1400px){
+body:not(.driver-mode) #application:not([hidden]){display:flex!important;flex-direction:column!important;min-height:100dvh!important;grid-template-columns:none!important;grid-template-rows:none!important}
+body:not(.driver-mode) #application:not([hidden])>#adm-topbar{display:flex!important;flex:0 0 auto!important;grid-column:auto!important;grid-row:auto!important;min-height:48px!important;padding:5px 14px!important}
+body:not(.driver-mode) #adm-topbar-brand{flex:1;min-width:0}
+body:not(.driver-mode) #adm-topbar-brand .brand{display:flex;align-items:center;gap:9px;font-size:clamp(14px,2vw,19px);min-width:0}
+body:not(.driver-mode) #adm-topbar-brand .brand-photo,body:not(.driver-mode) #adm-topbar-brand .brand b{width:36px;height:36px;object-fit:cover}
+body:not(.driver-mode) #adm-topbar-status,body:not(.driver-mode) #adm-topbar-clock{display:none!important}
+body:not(.driver-mode) #application>.app{display:block!important;flex:1 1 auto!important;width:100%!important;min-height:0!important;grid-column:auto!important;grid-row:auto!important}
+body:not(.driver-mode) #application>.app aside{display:none!important}
+body:not(.driver-mode) #application>.app main{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;padding:14px 18px calc(100px + env(safe-area-inset-bottom))!important;box-sizing:border-box!important}
+body:not(.driver-mode) #application>#mobile{display:flex!important;position:fixed!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;z-index:60!important;overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap!important;gap:4px!important;padding:6px 8px calc(6px + env(safe-area-inset-bottom))!important;background:rgba(13,13,16,.96)!important;border-top:1px solid var(--gold-line);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+body:not(.driver-mode) #application>#mobile .nav{display:flex!important;flex:0 0 auto!important;min-width:108px!important;min-height:46px!important;align-items:center!important;justify-content:center!important;padding:6px 10px!important}
+body.light:not(.driver-mode) #application>#mobile{background:rgba(255,255,255,.97)!important}
+}
