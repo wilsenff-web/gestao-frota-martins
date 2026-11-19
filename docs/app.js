@@ -98,12 +98,36 @@ function trips(){const categories=[['Todas','Todas'],['Trabalho','Trabalho'],['P
 
 const vehicleCategory=car=>car?.categoria==='Particular'?'Particular':'Trabalho';
 const categoryForTrip=trip=>vehicleCategory(get('veiculos',trip.veiculo_id));
+
+// Prévia administrativa, sem lançamento automático ou alteração de viagens históricas.
+function weeklySettlementPreview(){
+ if(typeof isDriver==='function'&&isDriver())return '';
+ const reference=new Date(agoraLocal().data+'T12:00:00');
+ reference.setDate(reference.getDate()-((reference.getDay()+6)%7));
+ const start=reference.toISOString().slice(0,10),last=new Date(reference);
+ last.setDate(last.getDate()+5);
+ const end=last.toISOString().slice(0,10);
+ const trips=db.viagens.filter(v=>v.status==='Concluída'&&usage(v)==='Viagem de trabalho'&&(v.data_fim||v.data)>=start&&(v.data_fim||v.data)<=end);
+ const groups=db.motoristas.map(m=>{
+  const mine=trips.filter(v=>v.motorista_id===m.id),rate=Number(m.excedente_valor_km);
+  if(!mine.length)return null;
+  const missing=mine.filter(v=>v.modalidade_diaria==='combinada'&&!(Number(v.valor)>0));
+  const base=mine.reduce((acc,v)=>acc+(v.modalidade_diaria==='combinada'?Math.max(0,Number(v.valor)||0):Math.max(0,Number(m.diaria_padrao)||0)*(v.modalidade_diaria==='meia'?0.5:1)),0);
+  const km=mine.reduce((acc,v)=>acc+tripKm(v),0);
+  const allowance=rate>0?base/rate:0,excess=rate>0?Math.max(0,km-allowance):0;
+  const due=rate>0?base+excess*rate:0;
+  return {m,mine,missing,rate,base,km,allowance,excess,due};
+ }).filter(Boolean);
+ const rows=groups.map(g=>`<div class="panel" style="margin-top:12px"><strong>${esc(g.m.nome)}</strong><p class="muted">${g.mine.length} diária(s) · ${g.km.toLocaleString('pt-BR')} KM rodados</p>${g.rate>0?`<div class="detail-grid">${detailCell('Diárias da semana',money(g.base))}${detailCell('Franquia semanal',g.allowance.toLocaleString('pt-BR',{maximumFractionDigits:1})+' KM')}${detailCell('KM excedentes',g.excess.toLocaleString('pt-BR',{maximumFractionDigits:1})+' KM')}${detailCell('Excedente estimado',money(g.excess*g.rate))}${detailCell('Total estimado',money(g.due))}</div>`:'<p class="muted">Cadastre a tarifa por KM deste motorista para calcular o fechamento.</p>'}${g.missing.length?`<p class="muted">Aguardando valor combinado em ${g.missing.length} viagem(ns). Total provisório; não fechar ainda.</p>`:''}</div>`).join('');
+ return `<div class="panel" style="margin-top:24px"><h2>Prévia do fechamento semanal · segunda a sábado</h2><p class="muted">${date(start)} a ${date(end)} · Compensação de KM entre as diárias da mesma semana e do mesmo motorista. Não gera cobrança nem baixa automática.</p>${rows||'<p class="muted">Nenhuma viagem de trabalho concluída nesta semana.</p>'}</div>`;
+}
 const financeTables={Receitas:'receitas',Despesas:'despesas',Pagamentos:'pagamentos',Pendências:'pendencias'};
 let pendenciaTab='Viagens';
 function finance(){
  const t=financeTables[tab],isPend=tab==='Pendências';
  const totalReceber=outstandingTrips().reduce((s,v)=>s+Math.max(0,(+v.valor||0)-paidTrip(v)),0);
  let out=head('Financeiro',isPend?'':'Novo lançamento',isPend?'':'new:'+t)+cards([['Receitas',money(sum(db.receitas))],['Despesas',money(sum(db.despesas))],['Recebido em pagamentos',money(sum(db.pagamentos))],['Pendências em aberto',money(db.pendencias.reduce((s,p)=>s+balance(p),0))],['Valores a receber',money(totalReceber)]]);
+ out+=weeklySettlementPreview();
  out+=`<div class="tabs" style="margin-top:22px;flex-wrap:wrap">${Object.keys(financeTables).map(x=>`<button class="tab ${tab===x?'active':''}" data-tab="${x}">${x}</button>`).join('')}</div>`;
  if(isPend){
   out+=`<div class="tabs" style="flex-wrap:wrap">${['Viagens','Outras pendências'].map(x=>`<button class="tab ${pendenciaTab===x?'active':''}" data-pendencia-tab="${x}">${x}${x==='Viagens'?' ('+outstandingTrips().length+')':''}</button>`).join('')}</div>`;
