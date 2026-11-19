@@ -347,22 +347,33 @@ input[type="file"].control::-webkit-file-upload-button{background:var(--gold);co
  #modal .modal .foot>*{min-width:0;flex:1 1 120px}
 }
 
-/* Weekly dashboard: independent scales, clear values, and compact responsive 3D columns */
+/* Weekly dashboard — same compact 3D language as fleet charts */
 .weekly-progress{overflow:hidden}
-.weekly-progress-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.weekly-progress-header p{margin:6px 0 0}
-.weekly-progress-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted)}
-.weekly-progress-legend span{display:inline-flex;align-items:center;gap:6px}
-.weekly-key{display:inline-block;width:12px;height:12px;border-radius:2px;background:#e7b200}
+.weekly-progress-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px}
+.weekly-progress-header p{margin:5px 0 0}
+.weekly-progress-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
+.weekly-progress-legend span{display:inline-flex;align-items:center;gap:5px}
+.weekly-key{width:11px;height:11px;display:inline-block;border-radius:2px;background:#e7b200}
 .weekly-key-money{background:#239c68}
-.weekly-progress-scroll{padding-top:10px!important;padding-bottom:18px!important}
-.weekly-progress-chart{height:290px!important;margin:24px 10px 76px!important;gap:12px!important;align-items:flex-end!important}
-.weekly-progress-person{height:100%!important;min-width:145px;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-end!important;gap:0!important;padding:0 12px!important}
-.weekly-progress-columns{height:100%;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:14px}
-.weekly-progress-bar{width:37%!important;max-width:52px;flex-shrink:0}
-.weekly-progress-bar-money{--column-color:#239c68!important;background:var(--column-color)!important;box-shadow:none!important}
-.weekly-progress-values{position:absolute;top:calc(100% + 22px);left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;font-weight:700;white-space:nowrap;color:var(--text)}
-.weekly-progress-values span:last-child{color:#2caa75}
-.weekly-progress-name{position:absolute;top:calc(100% + 59px);left:0;right:0;display:block;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--muted);padding:0 5px}
-.weekly-progress-note{font-size:12px;line-height:1.5;margin-top:10px}
-@media(max-width:600px){.weekly-progress-chart{height:220px!important;margin-bottom:80px!important}.weekly-progress-person{min-width:132px}.weekly-progress-legend{gap:10px}.weekly-progress-header{gap:8px}}
+.weekly-progress-chart{display:grid;grid-template-columns:repeat(var(--weekly-count),minmax(0,1fr));position:relative;isolation:isolate;align-items:end;gap:8px;height:250px;padding:34px 10px 0;margin:12px 8px 64px;min-width:0;width:auto}
+.weekly-progress-chart::before{content:"";position:absolute;left:4px;right:4px;bottom:-8px;height:22px;background:var(--chart-floor,#514a3d);transform:skewX(-42deg);z-index:0}
+.weekly-progress-chart::after{content:"";position:absolute;left:4px;right:4px;bottom:-16px;height:8px;background:var(--chart-front,#373026);z-index:0}
+.weekly-progress-person{height:100%;min-width:0;position:relative;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-end;z-index:1}
+.weekly-progress-columns{height:100%;display:flex;justify-content:center;align-items:flex-end;gap:clamp(4px,1vw,15px)}
+.weekly-progress-slot{width:40%;max-width:65px;height:100%;display:flex;align-items:flex-end;justify-content:center;min-width:0}
+.weekly-progress-bar{width:100%!important;min-width:0;max-width:65px;position:relative;--column-color:#e7b200;background:var(--column-color);border-radius:0;z-index:2}
+.weekly-progress-bar-money{--column-color:#239c68!important;background:var(--column-color)!important}
+.weekly-progress-bar-label{position:absolute;bottom:calc(100% + 13px);left:50%;transform:translateX(-50%);white-space:nowrap;color:var(--text);font-size:clamp(9px,1vw,12px);font-weight:600;line-height:1.2;text-align:center;text-shadow:0 1px 2px var(--bg)}
+.weekly-progress-name{position:absolute;top:calc(100% + 26px);left:0;right:0;text-align:center;color:var(--text);font-weight:650;font-size:clamp(10px,1vw,13px);line-height:1.25;overflow-wrap:anywhere;max-height:34px;overflow:hidden}
+.weekly-progress-note{font-size:11px;line-height:1.5;margin:0}
+@media(max-width:600px){
+.weekly-progress{padding:12px!important}
+.weekly-progress-chart{height:170px;padding:35px 0 0;gap:3px;margin:10px 2px 69px}
+.weekly-progress-columns{gap:4px}
+.weekly-progress-slot{width:40%}
+.weekly-progress-bar-label{font-size:clamp(7px,2vw,10px);bottom:calc(100% + 11px);letter-spacing:-.35px}
+.weekly-progress-name{font-size:clamp(8px,2.1vw,11px);top:calc(100% + 25px)}
+.weekly-progress-legend{font-size:10px;gap:8px}
+.weekly-progress-header strong{font-size:13px}
+.weekly-progress-note{font-size:10px}
+}
