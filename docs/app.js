@@ -128,7 +128,6 @@ function finance(){
  const totalReceber=outstandingTrips().reduce((s,v)=>s+Math.max(0,(+v.valor||0)-paidTrip(v)),0);
  let out=head('Financeiro',isPend?'':'Novo lançamento',isPend?'':'new:'+t)+cards([['Receitas',money(sum(db.receitas))],['Despesas',money(sum(db.despesas))],['Recebido em pagamentos',money(sum(db.pagamentos))],['Pendências em aberto',money(db.pendencias.reduce((s,p)=>s+balance(p),0))],['Valores a receber',money(totalReceber)]]);
  out+=`<div class="tabs" style="margin-top:22px;flex-wrap:wrap">${Object.keys(financeTables).map(x=>`<button class="tab ${tab===x?'active':''}" data-tab="${x}">${x}</button>`).join('')}</div>`;
- out+=weeklySettlementPreview();
  if(isPend){
   out+=`<div class="tabs" style="flex-wrap:wrap">${['Viagens','Outras pendências'].map(x=>`<button class="tab ${pendenciaTab===x?'active':''}" data-pendencia-tab="${x}">${x}${x==='Viagens'?' ('+outstandingTrips().length+')':''}</button>`).join('')}</div>`;
   if(pendenciaTab==='Viagens'){
@@ -139,6 +138,7 @@ function finance(){
  }else{
   out+=`<div class="panel">${newestRecords(db[t]).map(x=>row(t==='pagamentos'?'Pagamento de viagem':x.descricao,datedEntry(x),money(x.valor),btn('Ver / editar','edit:'+t,x.id)+((t==='receitas'||t==='despesas')?btn('Excluir','delete:'+t,x.id):''),'Registrado')).join('')||'<div class="empty">Nenhum lançamento</div>'}</div>`;
  }
+ out+=weeklySettlementPreview();
  return out;
 }
 function settings(){return head('Configurações')+`<div class="panel"><h2>Preferências</h2><form id="settings"><div class="grid">${input('Nome da empresa','empresa','text',db.config.empresa,true)}${select('Moeda','moeda',[['BRL','Real (R$)']])}<div class="field wide"><label for="brand-photo-file">Foto ou logo do topo</label><label class="brand-photo-preview" for="brand-photo-file" title="Escolher foto"><img data-brand-preview src="${esc(db.config.foto||'')}" alt="Prévia da foto da empresa" ${db.config.foto?'':'hidden'}><span data-brand-placeholder ${db.config.foto?'hidden':''}>Escolher foto</span></label><input id="brand-photo-file" class="control brand-photo-file" type="file" name="foto_empresa" accept="image/png,image/jpeg,image/webp"><small class="muted">Escolha JPG, PNG ou WebP de até 10 MB. Confira a prévia e clique em Salvar preferências.</small><p class="muted photo-feedback" data-brand-feedback role="status" aria-live="polite"></p>${db.config.foto?btn('Remover foto','brand:remove'):''}</div><label><input type="checkbox" name="alertas" ${db.config.alertas?'checked':''}> Alertas de pendências vencidas</label><label><input type="checkbox" name="exigir" ${db.config.exigir?'checked':''}> Exigir comprovante na conclusão</label></div><div class="foot"><button type="submit" class="btn">Salvar preferências</button></div></form></div><div class="panel"><h2>Backup dos dados online</h2>${btn('Exportar dados JSON','export')} ${btn('Restaurar backup JSON','restorebackup')}</div>`}
