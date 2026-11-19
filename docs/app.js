@@ -127,8 +127,8 @@ function finance(){
  const t=financeTables[tab],isPend=tab==='Pendências';
  const totalReceber=outstandingTrips().reduce((s,v)=>s+Math.max(0,(+v.valor||0)-paidTrip(v)),0);
  let out=head('Financeiro',isPend?'':'Novo lançamento',isPend?'':'new:'+t)+cards([['Receitas',money(sum(db.receitas))],['Despesas',money(sum(db.despesas))],['Recebido em pagamentos',money(sum(db.pagamentos))],['Pendências em aberto',money(db.pendencias.reduce((s,p)=>s+balance(p),0))],['Valores a receber',money(totalReceber)]]);
- out+=weeklySettlementPreview();
  out+=`<div class="tabs" style="margin-top:22px;flex-wrap:wrap">${Object.keys(financeTables).map(x=>`<button class="tab ${tab===x?'active':''}" data-tab="${x}">${x}</button>`).join('')}</div>`;
+ out+=weeklySettlementPreview();
  if(isPend){
   out+=`<div class="tabs" style="flex-wrap:wrap">${['Viagens','Outras pendências'].map(x=>`<button class="tab ${pendenciaTab===x?'active':''}" data-pendencia-tab="${x}">${x}${x==='Viagens'?' ('+outstandingTrips().length+')':''}</button>`).join('')}</div>`;
   if(pendenciaTab==='Viagens'){
