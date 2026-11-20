@@ -164,7 +164,7 @@ document.addEventListener('submit',async e=>{
  const value=Number(form.elements.valor.value),cents=Math.round(value*100),available=p?Math.round(balance(p)*100):0;
  if(!p||!Number.isFinite(value)||cents<=0||cents>available)return notify('Desconto inválido ou maior que o saldo disponível.',true);
  const start=form.elements.semana_inicio.value,dt=new Date(start+'T12:00:00');
- if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(start)||Number.isNaN(dt.getTime())||dt.getDay()!==1)return notify('Informe a segunda-feira da semana de referência.',true);
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(start)||Number.isNaN(dt.getTime())||dt.getDay()!==1)return notify('Informe a segunda-feira da semana de referência.',true);
  const motivo=form.elements.motivo.value.trim();if(!motivo)return notify('Informe a justificativa.',true);
  button.disabled=true;
  db.baixas.push({id:id(),pendencia_id:p.id,motorista_id:p.motorista_id,valor:cents/100,data:agoraLocal().data,tipo_lancamento:'desconto_produtividade',semana_inicio:start,motivo,concedido_por:myProfile.user_id||myProfile.email||'Administrador',...auditStamp()});
