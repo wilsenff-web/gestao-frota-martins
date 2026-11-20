@@ -370,3 +370,24 @@ input[type="file"].control::-webkit-file-upload-button{background:var(--gold);co
 .weekly-progress-name{position:absolute;top:calc(100% + 66px);left:0;right:0;text-align:center;color:var(--text);font-weight:650;font-size:clamp(10px,1.2vw,13px);line-height:1.25;overflow-wrap:anywhere;max-height:35px;overflow:hidden}
 .weekly-progress-note{font-size:11px;line-height:1.5;margin:0}
 @media(max-width:600px){.weekly-progress{padding:12px!important}.weekly-progress-chart{gap:3px;padding:0 2px;margin-bottom:110px}.weekly-progress-columns{gap:3px}.weekly-progress-slot{width:40%}.weekly-progress-values{font-size:clamp(8px,2.2vw,11px);white-space:normal;text-align:center}.weekly-progress-name{font-size:clamp(8px,2.2vw,11px)}.weekly-progress-legend{font-size:10px}.weekly-progress-header strong{font-size:13px}}
+
+/* Dashboard de desempenho · bordas douradas luminosas */
+#main .panel,#main .card,.perf-shell{border:1px solid #e5b900;box-shadow:0 0 0 1px rgba(255,213,74,.14),0 0 12px rgba(255,213,74,.20),inset 0 0 12px rgba(255,213,74,.035)}
+.perf-shell{background:linear-gradient(155deg,var(--card),var(--bg-elevated));border-radius:16px;padding:16px;margin:14px 0 18px}
+.perf-heading,.perf-controls,.perf-second{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.perf-heading{justify-content:space-between;margin-bottom:10px}
+.perf-heading h2{margin:0;color:var(--gold)}
+.perf-heading p{margin:4px 0}
+.perf-controls button{border:1px solid #bb9500;border-radius:18px;background:var(--card);color:var(--text);padding:8px 13px;cursor:pointer}
+.perf-controls button.selected{background:#ffd54a;color:#161616;font-weight:800;box-shadow:0 0 10px rgba(255,213,74,.45)}
+.perf-second{margin-bottom:14px}
+.perf-content{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:14px}
+.perf-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.perf-kpi,.perf-graph{min-width:0;border:1px solid #d9af17;border-radius:13px;background:var(--card);padding:13px;box-shadow:0 0 9px rgba(255,213,74,.18)}
+.perf-kpi small,.perf-kpi strong{display:block}.perf-kpi small{margin:5px 0;color:var(--muted)}.perf-kpi strong{color:var(--gold);font-size:clamp(17px,2vw,23px);overflow-wrap:anywhere}
+.perf-icon{color:#ffd54a;font-size:22px}.perf-graph h3{margin:0 0 12px;color:var(--gold)}
+.perf-line{margin:10px 0}.perf-line span{font-weight:600}.perf-line strong{float:right;color:var(--gold)}.perf-line small{display:block;margin-top:3px;color:var(--muted)}
+.perf-track{clear:both;background:rgba(150,150,150,.18);height:17px;border-radius:5px;overflow:hidden;margin-top:6px}
+.perf-track div{height:100%;border-radius:4px;background:linear-gradient(180deg,#fff18b 0%,#ffd54a 28%,#c28b00 100%);box-shadow:inset -4px 0 3px #916800,0 0 7px #ffd54a}
+body.light #main .panel,body.light #main .card,body.light .perf-shell{box-shadow:0 0 0 1px rgba(180,130,0,.14),0 0 8px rgba(190,140,0,.15)}
+@media(max-width:850px){.perf-content{grid-template-columns:1fr}.perf-shell{padding:11px}.perf-heading{align-items:flex-start}.perf-kpi{padding:10px}.perf-controls button{padding:7px 10px}}
