@@ -391,3 +391,23 @@ input[type="file"].control::-webkit-file-upload-button{background:var(--gold);co
 .perf-track div{height:100%;border-radius:4px;background:linear-gradient(180deg,#fff18b 0%,#ffd54a 28%,#c28b00 100%);box-shadow:inset -4px 0 3px #916800,0 0 7px #ffd54a}
 body.light #main .panel,body.light #main .card,body.light .perf-shell{box-shadow:0 0 0 1px rgba(180,130,0,.14),0 0 8px rgba(190,140,0,.15)}
 @media(max-width:850px){.perf-content{grid-template-columns:1fr}.perf-shell{padding:11px}.perf-heading{align-items:flex-start}.perf-kpi{padding:10px}.perf-controls button{padding:7px 10px}}
+
+
+/* Desempenho da Frota: controles agrupados e alinhados */
+.perf-heading{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap}
+.perf-heading>.perf-controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:nowrap}
+.perf-second{display:flex;align-items:center;justify-content:space-between;gap:10px 16px;flex-wrap:wrap}
+.perf-week-controls,.perf-view-controls{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+.perf-controls button{min-height:38px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
+.perf-date-range{white-space:nowrap;text-align:center;font-size:13px}
+@media(max-width:1000px){.perf-second{justify-content:flex-start}.perf-view-controls{margin-left:0}}
+@media(max-width:640px){
+ .perf-heading{align-items:flex-start}
+ .perf-heading>.perf-controls{justify-content:flex-start;max-width:100%;flex-wrap:wrap}
+ .perf-second{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+ .perf-week-controls{flex-wrap:wrap;justify-content:center}
+ .perf-view-controls{justify-content:center}
+ .perf-date-range{flex:1 1 100%;order:-1}
+ .perf-week-controls button{flex:1 1 130px}
+ .perf-view-controls button{flex:1 1 0}
+}
