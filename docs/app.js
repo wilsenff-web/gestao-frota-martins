@@ -139,9 +139,39 @@ function weeklySettlementPreview(){
   const due=rate>0?base+excess*rate:0;
   return {m,mine,missing,rate,base,km,allowance,excess,due};
  }).filter(Boolean);
- const rows=groups.map(g=>`<div class="panel" style="margin-top:12px"><strong>${esc(g.m.nome)}</strong><p class="muted">${g.mine.length} diária(s) · ${g.km.toLocaleString('pt-BR')} KM rodados</p>${g.rate>0?`<div class="detail-grid">${detailCell('Diárias da semana',money(g.base))}${detailCell('Franquia semanal',g.allowance.toLocaleString('pt-BR',{maximumFractionDigits:1})+' KM')}${detailCell('KM excedentes',g.excess.toLocaleString('pt-BR',{maximumFractionDigits:1})+' KM')}${detailCell('Excedente estimado',money(g.excess*g.rate))}${detailCell('Total estimado',money(g.due))}</div>`:'<p class="muted">Cadastre a tarifa por KM deste motorista para calcular o fechamento.</p>'}${g.missing.length?`<p class="muted">Aguardando valor combinado em ${g.missing.length} viagem(ns). Total provisório; não fechar ainda.</p>`:''}</div>`).join('');
+ const rows=groups.map(g=>`<div class="panel" style="margin-top:12px"><strong>${esc(g.m.nome)}</strong><p class="muted">${g.mine.length} diária(s) · ${g.km.toLocaleString('pt-BR')} KM rodados</p>${g.rate>0?`<div class="detail-grid">${detailCell('Diárias da semana',money(g.base))}${detailCell('Franquia semanal',g.allowance.toLocaleString('pt-BR',{maximumFractionDigits:1})+' KM')}${detailCell('KM excedentes',g.excess.toLocaleString('pt-BR',{maximumFractionDigits:1})+' KM')}${detailCell('Excedente estimado',money(g.excess*g.rate))}${detailCell('Total estimado',money(g.due))}</div>`:'<p class="muted">Cadastre a tarifa por KM deste motorista para calcular o fechamento.</p>'}${g.missing.length?`<p class="muted">Aguardando valor combinado em ${g.missing.length} viagem(ns). Total provisório; não fechar ainda.</p>`:''}${g.missing.length?'':'<button class="btn" data-discount-driver="'+esc(g.m.id)+'">Desconto em pendência deste motorista</button>'}</div>`).join('');
  return `<div class="panel" style="margin-top:24px"><h2>Prévia do fechamento semanal · segunda a sábado</h2><p class="muted">${date(start)} a ${date(end)} · Compensação de KM entre as diárias da mesma semana e do mesmo motorista. Não gera cobrança nem baixa automática.</p>${rows||'<p class="muted">Nenhuma viagem de trabalho concluída nesta semana.</p>'}</div>`;
 }
+
+/* Descontos administrativos: lançados como abatimentos, nunca como pagamentos recebidos. */
+function discountHistory(pendenciaId){return db.baixas.filter(b=>b.pendencia_id===pendenciaId&&b.tipo_lancamento==='desconto_produtividade');}
+function discountWeekStart(){const d=new Date(agoraLocal().data+'T12:00:00');d.setDate(d.getDate()-((d.getDay()+6)%7));return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');}
+function discountOpen(pendenciaId='',motoristaId=''){
+ if(isDriver()||myProfile?.role!=='admin')return notify('Somente o administrador pode conceder descontos.',true);
+ const eligible=db.pendencias.filter(p=>balance(p)>0&&(!motoristaId||p.motorista_id===motoristaId));
+ if(!eligible.length)return notify('Não há pendências em aberto para aplicar o desconto. O fechamento semanal é apenas uma prévia, sem cobrança registrada.',true);
+ const chosen=eligible.find(p=>p.id===pendenciaId)||eligible[0];
+ const options=eligible.map(p=>'<option value="'+esc(p.id)+'" '+(p.id===chosen.id?'selected':'')+'>'+esc(name('motoristas',p.motorista_id)+' · '+(p.tipo||'Pendência')+' · '+money(balance(p)))+'</option>').join('');
+ document.querySelector('#modal').innerHTML='<div class="overlay"><div class="modal"><div class="head"><h2>Conceder desconto por produtividade</h2><button type="button" class="btn" data-discount-close>✕</button></div><form id="discount-form"><div class="grid"><div class="field wide"><label>Pendência em aberto</label><select class="control" name="pendencia_id" required>'+options+'</select></div><div class="field"><label>Valor do desconto (R$)</label><input class="control" type="number" name="valor" min="0.01" step="0.01" required></div><div class="field"><label>Semana de referência (segunda-feira)</label><input class="control" type="date" name="semana_inicio" value="'+discountWeekStart()+'" required></div><div class="field wide"><label>Motivo / justificativa</label><textarea class="control" name="motivo" required maxlength="400" placeholder="Ex.: Boa produtividade e KM excedentes na semana"></textarea></div></div><p class="muted">O desconto reduz somente o saldo da pendência selecionada. Não registra pagamento nem altera o valor original. O fechamento semanal sem cobrança não será abatido automaticamente.</p><div class="foot"><button type="button" class="btn" data-discount-close>Cancelar</button><button type="submit" class="btn">Confirmar desconto</button></div></form></div></div>';
+}
+document.addEventListener('click',e=>{const close=e.target.closest('[data-discount-close]');if(close){document.querySelector('#modal').innerHTML='';return;}const btn=e.target.closest('[data-discount-pending],[data-discount-driver]');if(btn){e.preventDefault();discountOpen(btn.dataset.discountPending||'',btn.dataset.discountDriver||'');}});
+document.addEventListener('submit',async e=>{
+ if(e.target.id!=='discount-form')return;
+ e.preventDefault();
+ const form=e.target,button=form.querySelector('[type="submit"]');if(button.disabled)return;
+ if(isDriver()||myProfile?.role!=='admin')return notify('Acesso não autorizado.',true);
+ const p=db.pendencias.find(x=>x.id===form.elements.pendencia_id.value);
+ const value=Number(form.elements.valor.value),cents=Math.round(value*100),available=p?Math.round(balance(p)*100):0;
+ if(!p||!Number.isFinite(value)||cents<=0||cents>available)return notify('Desconto inválido ou maior que o saldo disponível.',true);
+ const start=form.elements.semana_inicio.value,dt=new Date(start+'T12:00:00');
+ if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(start)||Number.isNaN(dt.getTime())||dt.getDay()!==1)return notify('Informe a segunda-feira da semana de referência.',true);
+ const motivo=form.elements.motivo.value.trim();if(!motivo)return notify('Informe a justificativa.',true);
+ button.disabled=true;
+ db.baixas.push({id:id(),pendencia_id:p.id,motorista_id:p.motorista_id,valor:cents/100,data:agoraLocal().data,tipo_lancamento:'desconto_produtividade',semana_inicio:start,motivo,concedido_por:myProfile.user_id||myProfile.email||'Administrador',...auditStamp()});
+ try{await saveOnline();document.querySelector('#modal').innerHTML='';render();notify('Desconto registrado e saldo atualizado.');}
+ catch(error){notify(error.message||'Não foi possível registrar o desconto.',true);button.disabled=false;}
+});
+
 const financeTables={Receitas:'receitas',Despesas:'despesas',Pagamentos:'pagamentos',Pendências:'pendencias'};
 let pendenciaTab='Viagens';
 function finance(){
@@ -154,7 +184,7 @@ function finance(){
   if(pendenciaTab==='Viagens'){
    out+=`<div class="panel">${outstandingTrips().map(v=>row(tripDriverName(v),tripDatesLabel(v)+' · '+usage(v)+' · '+(v.origem||'—')+' → '+(v.destino||'—'),money(Math.max(0,(+v.valor||0)-paidTrip(v))),btn('Detalhes','details',v.id)+btn('Confirmar pagamento','paytrip',v.id),payStatus(v))).join('')||'<div class="empty">Nenhuma viagem com pagamento pendente</div>'}</div>`;
   }else{
-   out+=`<div class="toolbar">${btn('Nova pendência','new:pendencias','','btn')}</div><div class="panel">${newestRecords(db.pendencias,'data_lancamento').map(x=>row(name('motoristas',x.motorista_id),x.tipo+' · vence em '+date(x.vencimento)+' · '+entryStamp(x),money(balance(x)),btn('Ver / editar','edit:pendencias',x.id)+(balance(x)>0?btn('Dar baixa','baixa',x.id):''),balance(x)>0?'Pendente':'Quitada')).join('')||'<div class="empty">Nenhuma outra pendência</div>'}</div>`;
+   out+=`<div class="toolbar">${btn('Nova pendência','new:pendencias','','btn')}</div><div class="panel">${newestRecords(db.pendencias,'data_lancamento').map(x=>row(name('motoristas',x.motorista_id),x.tipo+' · vence em '+date(x.vencimento)+' · '+entryStamp(x),money(balance(x)),btn('Ver / editar','edit:pendencias',x.id)+(balance(x)>0?btn('Dar baixa','baixa',x.id)+'<button class="btn" data-discount-pending="'+esc(x.id)+'">Desconto</button>':'')+(discountHistory(x.id).length?'<small class="muted">Descontos: '+discountHistory(x.id).map(d=>money(d.valor)+' · '+esc(d.motivo||'')+' · '+esc(d.semana_inicio||'')).join('; ')+'</small>':''),balance(x)>0?'Pendente':'Quitada')).join('')||'<div class="empty">Nenhuma outra pendência</div>'}</div>`;
   }
  }else{
   out+=`<div class="panel">${newestRecords(db[t]).map(x=>row(t==='pagamentos'?'Pagamento de viagem':x.descricao,datedEntry(x),money(x.valor),btn('Ver / editar','edit:'+t,x.id)+((t==='receitas'||t==='despesas')?btn('Excluir','delete:'+t,x.id):''),'Registrado')).join('')||'<div class="empty">Nenhum lançamento</div>'}</div>`;
