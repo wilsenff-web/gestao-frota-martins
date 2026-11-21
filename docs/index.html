@@ -39,7 +39,7 @@ body:not(.light) #martins-clock .time{color:#fff;}
 <script>
 /* Verificação de versão para PWA instalado (PC, Android e iOS). */
 (function(){
- const BUILD='20261119-release-8',BASE='./sw.js',KEY='frota_martins_build';
+ const BUILD='20261121-driver-finish-1',BASE='./sw.js',KEY='frota_martins_build';
  let checking=false,reloading=false,lastCheck=0;
  const stored=()=>{try{return localStorage.getItem(KEY)}catch(_){return null}};
  const save=v=>{try{localStorage.setItem(KEY,v)}catch(_){}};
@@ -54,7 +54,7 @@ body:not(.light) #martins-clock .time{color:#fff;}
    const source=await response.text(),match=source.match(/APP_VERSION\s*=\s*['"]([^'"]+)['"]/);
    if(!match)return;
    const latest=match[1],previous=stored();
-   if(latest!==BUILD){if(previous!==latest){save(latest);reload(latest)}return}
+   if(latest!==BUILD){save(latest);reload(latest);return}
    if(previous!==latest)save(latest);
    if('serviceWorker' in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update()}
   }catch(err){console.warn('Verificação de versão:',err)}
