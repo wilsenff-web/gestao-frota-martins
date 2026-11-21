@@ -1,8 +1,8 @@
 // Versão publicada; consultada sem cache por aplicativos instalados.
-const APP_VERSION='20261121-pwa-refresh-5';
+const APP_VERSION='20261121-pwa-refresh-6';
 // Frota Martins: atualizações sempre pela rede; nunca guardar HTML/JS/CSS antigos.
 // Supabase, sessão e dados continuam sob as regras normais da aplicação.
-const CACHE='frota-martins-shell-20261121-pwa-refresh-5';
+const CACHE='frota-martins-shell-20261121-pwa-refresh-6';
 self.addEventListener('install',event=>{event.waitUntil(Promise.resolve());self.skipWaiting()});
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{for(const key of await caches.keys()){if(key.startsWith('frota-martins-shell-'))await caches.delete(key)}await self.clients.claim()})())});
 self.addEventListener('fetch',event=>{
