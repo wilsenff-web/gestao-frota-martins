@@ -1,18 +1,33 @@
-.frota-driver-trip{display:grid;gap:12px;padding:14px;border:1px solid var(--gold,#ffd54a);border-radius:14px;background:var(--card);min-width:0}
-.frota-driver-trip .head,.frota-driver-trip p{margin:0;min-width:0;overflow-wrap:anywhere}
-.frota-driver-trip .head{align-items:flex-start;gap:12px}
-.frota-driver-trip .driver-icon{width:17px;height:17px;margin-right:5px;vertical-align:-3px}
-.frota-trip-summary{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:5px;align-items:stretch}
-.frota-trip-summary strong{display:flex;align-items:center;justify-content:center;gap:3px;text-align:center;font-size:clamp(.82rem,3.45vw,1.1rem);font-weight:800;line-height:1.16;border:1px solid var(--gold,#ffd54a);padding:7px 4px;border-radius:8px;overflow-wrap:anywhere;min-width:0}
-.frota-trip-summary strong:first-child{white-space:nowrap;font-variant-numeric:tabular-nums}
-.frota-trip-summary svg{flex:none;margin-right:0!important}
+.frota-driver-trip{display:grid;gap:10px;padding:12px;border:2px solid #f5c400;border-radius:19px;background:linear-gradient(135deg,#151617,#101114);min-width:0;box-shadow:0 0 8px #ffc40024}
+.frota-trip-header{display:flex;align-items:center;gap:10px}
+.frota-trip-header .trip-card-avatar{flex:none;width:39px;height:39px}
+.frota-trip-identity,.frota-trip-route{display:grid;min-width:0;gap:6px}
+.frota-driver-trip .trip-card-line,.frota-driver-trip .trip-card-title{overflow-wrap:anywhere;font-size:clamp(.87rem,3.65vw,1rem)}
+.frota-driver-trip :is(.trip-card-icon,.driver-icon){width:18px;height:18px;flex:0 0 18px;color:#f5c400}
+.frota-trip-km{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.frota-trip-km .trip-card-metric{display:grid;align-content:center;justify-items:center;text-align:center;gap:4px;min-height:64px;padding:5px 2px;border:1px solid #e8c44c;border-radius:11px;background:#fff0b4;color:#241b00}
+.frota-trip-km .trip-card-metric>span{display:flex;align-items:center;justify-content:center;gap:3px;font-weight:750;font-size:clamp(.59rem,2.65vw,.8rem);line-height:1.1}
+.frota-trip-km .trip-card-metric strong{font-weight:800;font-size:clamp(.82rem,3.65vw,1.03rem);line-height:1.15}
+.frota-trip-km .trip-card-metric :is(.trip-card-icon,.driver-icon){width:12px;height:12px;flex-basis:12px;color:#a57100}
+.frota-trip-summary{display:grid;grid-template-columns:minmax(max-content,.8fr) minmax(0,1.35fr) minmax(0,1fr);width:fit-content;max-width:100%;gap:5px;align-items:stretch}
+.frota-trip-summary strong{display:flex;align-items:center;justify-content:center;gap:3px;text-align:center;font-size:clamp(.72rem,2.95vw,.92rem);font-weight:800;line-height:1.15;border:1px solid;padding:5px 7px;border-radius:14px;overflow-wrap:anywhere;min-width:0}
+.frota-trip-summary .frota-trip-value{white-space:nowrap;font-variant-numeric:tabular-nums;border-color:#f5c400;background:#382809;color:#fff9e7}
+.frota-trip-summary .frota-trip-type{border-color:#c79542;background:#312319;color:#fff4e3}
 .frota-trip-summary .done{color:#85e5a8;border-color:#5bc888;background:#143524}
 .frota-trip-summary .pending{color:#ffc480;border-color:#f3a041;background:#432610}
 .frota-trip-summary .active{color:#a3d5ff;border-color:#69bafa;background:#102e48}
+body.light .frota-driver-trip{background:linear-gradient(135deg,#fff,#f8f7f3);border-color:#ca9700}
+body.light .frota-driver-trip :is(.trip-card-icon,.driver-icon){color:#986a00}
+body.light .frota-trip-summary .frota-trip-value{color:#503000;background:#fff0bc;border-color:#a67600}
+body.light .frota-trip-summary .frota-trip-type{color:#563718;background:#f8e8ce;border-color:#a47843}
 body.light .frota-trip-summary .done{color:#17673a;background:#e5f6e9;border-color:#298451}
 body.light .frota-trip-summary .pending{color:#884107;background:#fff1de;border-color:#ab5b10}
 body.light .frota-trip-summary .active{color:#185084;background:#e9f4ff;border-color:#2667a0}
 .frota-trip-actions,.frota-receipt-list{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.frota-driver-trip .frota-trip-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.frota-driver-trip .frota-trip-actions button{min-width:0;width:100%;min-height:44px;border-radius:24px;background:#fff0b4;color:#241b00;border:1px solid #e8c44c;padding:6px;white-space:normal}
+.frota-driver-trip .frota-trip-actions button:hover{background:#ffe180}
+.frota-driver-trip .frota-trip-actions :only-child,.frota-trip-finish,.frota-trip-finish+button:last-child{grid-column:1/-1}
 .frota-trip-actions button,.frota-receipt-viewer .foot>*{min-height:44px}
 .frota-ocr{min-width:0;border:1px solid var(--gold,#ffd54a);border-radius:10px;padding:12px}
 .frota-ocr label{display:block;margin:.45rem 0}
@@ -26,4 +41,4 @@ body.light .frota-trip-summary .active{color:#185084;background:#e9f4ff;border-c
 .frota-receipt-viewer .foot{flex-wrap:wrap}
 .frota-receipt-scroll{overflow:auto;max-height:60vh;overscroll-behavior:contain}
 .frota-receipt-scroll img{display:block;width:100%;height:auto;object-fit:contain;margin:auto}
-@media(max-width:370px){.frota-trip-summary .driver-icon,.frota-trip-summary strong:first-child span{display:none}.frota-driver-trip{padding:9px}.frota-trip-summary strong{font-size:.8rem}}
+

@@ -40,16 +40,43 @@
 
  function driverTripCard(trip) {
   const active = trip.status === 'Em andamento';
-  const pending = !active && (+trip.valor > paidTrip(trip) || trip.comprovante_status === 'Pendente' || trip.comprovante_status === 'Correção solicitada');
+  const pending = !active && (+trip.valor > paidTrip(trip) || ['Pendente', 'Correção solicitada'].includes(trip.comprovante_status));
   const state = active ? 'active' : pending ? 'pending' : 'done';
   const label = active ? 'Em andamento' : pending ? 'Pendente' : 'Finalizada';
-  const metric = (label, value) => '<div class="trip-card-metric"><span>' + label + '</span><strong>' + value + '</strong></div>';
-  const km = value => value !== '' && value != null ? Number(value).toLocaleString('pt-BR') : '—';
-  return '<article class="frota-driver-trip"><div class="head"><strong>' + driverIcon('car') + esc(tripVehicleLabel(trip)) + '</strong><span>' + esc(date(trip.data)) + '</span></div>'
-   + '<p>' + driverIcon('route') + esc(trip.origem || '—') + ' → ' + esc(trip.destino || '—') + '</p>'
-   + '<div class="trip-card-metrics">' + metric('KM inicial', km(trip.km_inicial)) + metric('KM final', km(trip.km_final)) + metric('Total KM rodado', active ? '—' : km(tripKm(trip))) + '</div>'
-   + '<div class="frota-trip-summary"><strong><span aria-hidden="true">＄</span> ' + money(trip.valor) + '</strong><strong>' + driverIcon('route') + esc(usage(trip)) + '</strong><strong class="frota-trip-state ' + state + '"><span aria-hidden="true">' + (active ? '◷' : pending ? '!' : '✓') + '</span> ' + label + '</strong></div>'
-   + '<div class="frota-trip-actions">' + (active ? btn('Concluir viagem', 'finish', trip.id, 'btn') : '') + btn('Detalhes', 'details', trip.id, 'mini') + (receiptDocuments(trip).length ? receiptButton('trip', trip.id, 'Ver recibo') : '') + '</div></article>';
+  const indicator = active ? '◷' : pending ? '!' : '✓';
+  const driver = name('motoristas', trip.motorista_id) || myProfile.nome || 'Motorista';
+  const icon = key => typeof tripCardIcon === 'function' ? tripCardIcon(key) : driverIcon({calendar:'pending',gauge:'km'}[key] || key);
+  const km = value => value !== '' && value != null && Number.isFinite(Number(value)) ? Number(value).toLocaleString('pt-BR') : '—';
+  const metric = (label, value, key) => `<div class="trip-card-metric"><span>${icon(key)} ${label}</span><strong>${value}</strong></div>`;
+  const actions = btn('Detalhes', 'details', trip.id, 'btn')
+   + (receiptDocuments(trip).length ? receiptButton('trip', trip.id, 'Ver recibo', 'btn') : '');
+  return `<article class="frota-driver-trip">
+   <div class="frota-trip-header">
+    <span class="trip-card-avatar" aria-hidden="true">${esc(driver.slice(0, 2).toLocaleUpperCase('pt-BR'))}</span>
+    <div class="frota-trip-identity">
+     <div class="trip-card-title">${icon('user')}<strong>${esc(driver)}</strong></div>
+     <div class="trip-card-line">${icon('car')}<span>${esc(tripVehicleLabel(trip))}</span></div>
+    </div>
+   </div>
+   <div class="frota-trip-route">
+    <div class="trip-card-line">${icon('route')}<span>${esc(trip.origem || '—')} → ${esc(trip.destino || '—')}</span></div>
+    <div class="trip-card-line">${icon('calendar')}<span>${esc(date(trip.data))}</span></div>
+   </div>
+   <div class="frota-trip-km">
+    ${metric('KM inicial', km(trip.km_inicial), 'gauge')}
+    ${metric('KM final', km(trip.km_final), 'gauge')}
+    ${metric('Total KM rodado', active ? '—' : km(tripKm(trip)), 'route')}
+   </div>
+   <div class="frota-trip-summary">
+    <strong class="frota-trip-value">${money(trip.valor)}</strong>
+    <strong class="frota-trip-type">${esc(usage(trip))}</strong>
+    <strong class="frota-trip-state ${state}"><span aria-hidden="true">${indicator}</span> ${label}</strong>
+   </div>
+   <div class="frota-trip-actions">
+    ${active ? btn('Concluir viagem', 'finish', trip.id, 'btn frota-trip-finish') : ''}
+    ${actions}
+   </div>
+  </article>`;
  }
 
  if (typeof tripCard === 'function') {
