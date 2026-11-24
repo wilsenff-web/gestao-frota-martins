@@ -134,6 +134,7 @@
   scan.addEventListener('click', async () => {
    if (!state.file) { feedback.textContent = 'Escolha um arquivo ou tire uma foto.'; return; }
    const controls = [form.querySelector('.foot button:not([data-act])'), mode, scan, ...inputs].filter(Boolean);
+   state.scanning = true;
    for (const control of controls) control.disabled = true;
    try {
     const type = await proofFileType(state.file, 20 * 1024 * 1024);
@@ -151,6 +152,7 @@
    } catch (error) {
     feedback.textContent = error.message || 'Não foi possível escanear. Tente outra imagem ou anexe o original.';
    } finally {
+    state.scanning = false;
     for (const control of controls) control.disabled = false;
    }
   });
@@ -263,7 +265,7 @@
   if (!state) return;
   event.preventDefault();
   event.stopImmediatePropagation();
-  if (state.busy) return;
+  if (state.busy || state.scanning) return;
   if (!myProfile || myProfile.status !== 'ativo' || isDriver()) return;
   const table = form.dataset.receiptPayment;
   const controls = [...form.querySelectorAll('button')];
@@ -290,6 +292,13 @@
     }
     state.unconfirmed = false;
    }
+   const source = get(table === 'pagamentos' ? 'viagens' : 'pendencias', parent);
+   if (!source.id) throw Error('A origem do pagamento não está disponível. Atualize os dados.');
+   const available = table === 'baixas'
+    ? balance(source)
+    : (+source.valor || 0) - sum(db.pagamentos.filter(p => p.viagem_id === parent && p.id !== state.recordId));
+   if (Math.round(value * 100) > Math.round(available * 100)) throw Error('O valor é maior que o saldo a receber.');
+   if (table === 'pagamentos' && source.status !== 'Concluída') throw Error('Selecione uma viagem concluída.');
    const file = state.file;
    const preserve = mode === 'original' || mode === 'both';
    const digital = mode === 'digital' || mode === 'both';
