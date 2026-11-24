@@ -1,4 +1,38 @@
 (() => {
+ // The bundled PDF.js uses these APIs on older WebKit and Chromium versions.
+ const defineMissing = (target, key, value) => {
+  if (typeof target[key] !== 'function') Object.defineProperty(target, key, { value, configurable: true, writable: true });
+ };
+ for (const Type of [Map, WeakMap]) defineMissing(Type.prototype, 'getOrInsertComputed', function (key, compute) {
+  if (!this.has(key)) {
+   const value = compute(key);
+   this.set(key, value);
+  }
+  return this.get(key);
+ });
+ defineMissing(Promise, 'withResolvers', function () {
+  let resolve, reject;
+  const promise = new this((yes, no) => { resolve = yes; reject = no; });
+  return { promise, resolve, reject };
+ });
+ defineMissing(Math, 'sumPrecise', function (values) {
+  let sum = 0, correction = 0;
+  for (const value of values) {
+   const next = sum + value;
+   if (Number.isFinite(next)) correction += Math.abs(sum) >= Math.abs(value) ? (sum - next) + value : (value - next) + sum;
+   sum = next;
+  }
+  return sum + correction;
+ });
+ defineMissing(Uint8Array, 'fromBase64', value => Uint8Array.from(atob(value), c => c.charCodeAt(0)));
+ defineMissing(Uint8Array.prototype, 'toBase64', function () {
+  let binary = '';
+  for (let i = 0; i < this.length; i += 8192) binary += String.fromCharCode(...this.subarray(i, i + 8192));
+  return btoa(binary);
+ });
+ defineMissing(Uint8Array.prototype, 'toHex', function () {
+  return Array.from(this, value => value.toString(16).padStart(2, '0')).join('');
+ });
  const cdn = 'https://cdn.jsdelivr.net/npm/';
  const ocrPackage = cdn + 'tesseract.js@5.1.1/dist/';
  let ocrLibrary;
