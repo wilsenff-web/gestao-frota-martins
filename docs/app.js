@@ -558,8 +558,9 @@ function setupAdminAccountMenu(){
  let panel=document.getElementById('adm-account-popup');
  if(!panel){panel=document.createElement('section');panel.id='adm-account-popup';panel.hidden=true;panel.setAttribute('aria-label','Minha conta');document.getElementById('application').append(panel);}
  panel.hidden=true;
+ const controls=['app-refresh-control','app-version-label'].map(id=>document.getElementById(id)).filter(Boolean);for(const el of controls)el.remove();
  panel.innerHTML='<div class="adm-account-name"><strong>'+esc(myProfile.nome||'Administrador')+'</strong><small>ADMINISTRADOR</small><span>'+esc(myProfile.email||sessionUser?.email||'')+'</span></div><button type="button" class="nav" data-act="brand:choose">▧ Alterar foto ou logo</button><button type="button" class="nav" data-online="password">Alterar senha</button><div id="adm-account-update"></div><button type="button" class="nav" data-online="signout">Sair da conta</button>';
- const update=panel.querySelector('#adm-account-update');for(const id of ['app-refresh-control','app-version-label']){const el=document.getElementById(id);if(el)update.append(el);}
+ const update=panel.querySelector('#adm-account-update');for(const el of controls)update.append(el);
  account.hidden=true;
  trigger.onclick=()=>{panel.hidden=!panel.hidden;trigger.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden){const rect=trigger.getBoundingClientRect();panel.style.top=Math.min(rect.bottom+8,Math.max(8,innerHeight-320))+'px';panel.style.left=Math.max(8,Math.min(rect.left,innerWidth-304))+'px';}};
 }
