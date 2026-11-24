@@ -205,7 +205,7 @@
   if (!ocrLibrary) ocrLibrary = new Promise((resolve, reject) => {
    const script = document.createElement('script');
    script.src = ocrPackage + 'tesseract.min.js';
-   script.integrity = 'sha384-5D+9rOA7QhIVVlbglgjfeZ3vcuDz3a+TTrJbV3qiZqHpkTOTowdlTqQXF8E8pw/j';
+   script.integrity = 'sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F';
    script.crossOrigin = 'anonymous';
    script.onload = () => resolve(window.Tesseract);
    script.onerror = () => { script.remove(); reject(Error('O leitor OCR não carregou. Confira a conexão e tente novamente.')); };
