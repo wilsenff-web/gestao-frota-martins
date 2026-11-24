@@ -167,7 +167,7 @@
    + '<button class="mini" data-scan-proof type="button" hidden>Escanear comprovante</button></div>'
    + '<label for="payment-bank">Banco ou instituição (opcional)</label><input class="control" id="payment-bank" maxlength="120" value="' + esc(existing.banco_pagamento || '') + '">'
    + '<details><summary>Referência do pagamento (opcional)</summary><label for="payment-reference">Identificador da transação</label>Referência do pagamento (opcional)</label><input class="control" id="payment-reference" maxlength="120" value="' + esc(existing.referencia_pagamento || '') + '"></details>'
-   + '<p data-scan-feedback role="status" class="muted"></p><details data-scan-review hidden><summary>Texto original da leitura · consulta</summary><pre></pre></details>'
+   + '<p data-scan-feedback role="status" class="muted"></p><section data-scan-review hidden><label for="payment-review-text">Editar texto do comprovante</label><textarea id="payment-review-text" class="control" rows="8" maxlength="2000"></textarea><label class="frota-include-review"><input id="payment-review-include" type="checkbox"> Incluir o texto editado no recibo digital</label><small>Apague as informações que não quer incluir. Valor, data, forma e banco continuam nos campos do pagamento.</small></section>'
    + '<small>Pagamentos em dinheiro geram recibo digital automaticamente, inclusive quando parciais.</small>'
    + (existing.recibo ? '<p>' + receiptButton(table === 'baixas' ? 'baixa-digital' : 'digital', existing.id, 'Abrir recibo emitido') + '</p>' : '') + '</fieldset>');
   const mode = form.querySelector('#payment-proof-mode');
@@ -178,11 +178,13 @@
   const scan = form.querySelector('[data-scan-proof]');
   const feedback = form.querySelector('[data-scan-feedback]');
   const review = form.querySelector('[data-scan-review]');
+  const reviewText = form.querySelector('#payment-review-text');
+  const includeReview = form.querySelector('#payment-review-include');
   const resetScan = () => {
    state.scanned = null;
    review.hidden = true;
-   review.open = false;
-   review.querySelector('pre').textContent = '';
+   reviewText.value = '';
+   includeReview.checked = false;
    feedback.textContent = '';
   };
   mode.addEventListener('change', () => {
@@ -211,9 +213,10 @@
     if (result.reference) ref.value = result.reference;
     if (result.bank) bank.value = result.bank;
     state.scanned = state.file;
-    review.querySelector('pre').textContent = text || 'Nenhum texto legível identificado.';
+    reviewText.value = (text || '').trim().slice(0, 2000);
+    includeReview.checked = false;
     review.hidden = false;
-    feedback.textContent = 'Confira o valor, a data, a forma de pagamento e o banco nos campos do formulário. O texto original serve apenas para consulta.';
+    feedback.textContent = 'Confira os dados do pagamento. Você pode apagar ou corrigir o texto reconhecido no campo abaixo.';
    } catch (error) {
     feedback.textContent = error.message || 'Não foi possível escanear. Tente outra imagem ou anexe o original.';
    } finally {
@@ -370,6 +373,9 @@
    const file = state.file;
    const preserve = mode === 'original' || mode === 'both';
    const digital = mode === 'digital' || mode === 'both';
+   const includeReview = form.querySelector('#payment-review-include').checked;
+   const reviewedText = includeReview && digital ? form.querySelector('#payment-review-text').value.trim() : '';
+   if (includeReview && old.recibo) throw Error('Este recibo já foi emitido. O texto editado pode ser incluído em um novo recibo.');
    if (digital && (!file || state.scanned !== file)) throw Error('Escaneie o comprovante e confira os dados antes de confirmar.');
    if (preserve && old.recibo && old.arquivo) throw Error('O comprovante original deste recibo já está salvo e será preservado.');
    const proof = {};
@@ -389,7 +395,7 @@
     }
    }
    const data = { ...cleanRecord(old), ...auditStamp(old), ...proof, id: state.id, [parentField]: parent,
-    valor: value, data: day, forma: form.elements.forma.value, referencia_pagamento: reference, banco_pagamento: bank, recibo_digital: digital || cash };
+    valor: value, data: day, forma: form.elements.forma.value, referencia_pagamento: reference, banco_pagamento: bank, ...(reviewedText ? { texto_recibo: reviewedText } : {}), recibo_digital: digital || cash };
    state.expected = editing ? recordVersions.get(table + ':' + state.id) : 0;
    const changes = [{ kind: table, id: state.id, op: 'upsert', version: state.expected, data }];
    if (table === 'pagamentos') {
@@ -430,7 +436,8 @@
    [11, 'Emitido em ' + new Date(r.emitido_em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })],
    [11, 'Motorista: ' + (r.motorista || '—')], [11, 'Origem: ' + (r.descricao || r.origem_id || '—')],
    [11, 'Valor de origem: ' + money(r.valor_total)], [14, 'Valor recebido: ' + money(r.valor)],
-   [11, 'Forma de pagamento: ' + (r.forma || '—')], [11, r.banco ? 'Banco: ' + r.banco : ''], [11, r.referencia ? 'Referência: ' + r.referencia : '']
+   [11, 'Forma de pagamento: ' + (r.forma || '—')], [11, r.banco ? 'Banco: ' + r.banco : ''], [11, r.referencia ? 'Referência: ' + r.referencia : ''],
+   ...(r.texto_revisado ? [[12, 'Dados revisados do comprovante'], [11, r.texto_revisado]] : [])
   ];
   const lines = rows.flatMap(([size, value]) => (String(value || '').match(/.{1,73}(?:\s|$)|.{1,73}/gu) || []).map(line => [size, line.trim()]));
   const pages = [];
