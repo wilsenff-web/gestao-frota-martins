@@ -165,12 +165,14 @@
    + '<div data-payment-files hidden><label for="payment-proof-file">Escolher arquivo (JPEG, PNG ou PDF)</label><input class="control" id="payment-proof-file" type="file" accept="image/jpeg,image/png,application/pdf,.jpg,.jpeg,.png,.pdf">'
    + '<label for="payment-proof-camera">Fotografar com a câmera</label><input class="control" id="payment-proof-camera" type="file" accept="image/*" capture="environment">'
    + '<button class="mini" data-scan-proof type="button" hidden>Escanear comprovante</button></div>'
-   + '<label for="payment-reference">Referência do pagamento (opcional)</label><input class="control" id="payment-reference" maxlength="120" value="' + esc(existing.referencia_pagamento || '') + '">'
-   + '<p data-scan-feedback role="status" class="muted"></p><details data-scan-review hidden><summary>Texto identificado</summary><pre></pre></details>'
+   + '<label for="payment-bank">Banco ou instituição (opcional)</label><input class="control" id="payment-bank" maxlength="120" value="' + esc(existing.banco_pagamento || '') + '">'
+   + '<details><summary>Referência do pagamento (opcional)</summary><label for="payment-reference">Identificador da transação</label>Referência do pagamento (opcional)</label><input class="control" id="payment-reference" maxlength="120" value="' + esc(existing.referencia_pagamento || '') + '"></details>'
+   + '<p data-scan-feedback role="status" class="muted"></p><details data-scan-review hidden><summary>Texto original da leitura · consulta</summary><pre></pre></details>'
    + '<small>Pagamentos em dinheiro geram recibo digital automaticamente, inclusive quando parciais.</small>'
    + (existing.recibo ? '<p>' + receiptButton(table === 'baixas' ? 'baixa-digital' : 'digital', existing.id, 'Abrir recibo emitido') + '</p>' : '') + '</fieldset>');
   const mode = form.querySelector('#payment-proof-mode');
   const ref = form.querySelector('#payment-reference');
+  const bank = form.querySelector('#payment-bank');
   const inputs = [...form.querySelectorAll('.frota-ocr input[type=file]')];
   const state = paymentForms.get(form);
   const scan = form.querySelector('[data-scan-proof]');
@@ -179,6 +181,7 @@
   const resetScan = () => {
    state.scanned = null;
    review.hidden = true;
+   review.open = false;
    review.querySelector('pre').textContent = '';
    feedback.textContent = '';
   };
@@ -206,10 +209,11 @@
     if (result.day) form.elements.data.value = result.day;
     if (result.method) form.elements.forma.value = result.method;
     if (result.reference) ref.value = result.reference;
+    if (result.bank) bank.value = result.bank;
     state.scanned = state.file;
     review.querySelector('pre').textContent = text || 'Nenhum texto legível identificado.';
     review.hidden = false;
-    feedback.textContent = 'Confira e corrija o valor, a data, a forma de pagamento e a referência antes de confirmar.';
+    feedback.textContent = 'Confira o valor, a data, a forma de pagamento e o banco nos campos do formulário. O texto original serve apenas para consulta.';
    } catch (error) {
     feedback.textContent = error.message || 'Não foi possível escanear. Tente outra imagem ou anexe o original.';
    } finally {
@@ -317,7 +321,9 @@
   }
   const method = /\bpix\b/i.test(text) ? 'Pix' : /\b(cart[aã]o|cr[eé]dito|d[eé]bito)\b/i.test(text) ? 'Cartão' : /\bdinheiro\b/i.test(text) ? 'Dinheiro' : /\b(ted|transfer[eê]ncia)\b/i.test(text) ? 'Transferência' : '';
   const reference = /\bE[A-Z0-9]{31}\b/i.exec(text)?.[0] || '';
-  return { amount, day, method, reference };
+  const bankLine = /^\s*(?:institui[çc][ãa]o(?:\s+financeira)?|banco(?=\s*[:\-]))[ \t]*[:\-]?[ \t]*(.*)$/im.exec(text);
+  const bank = bankLine?.[1]?.trim().slice(0, 120) || '';
+  return { amount, day, method, reference, bank };
  }
 
  document.addEventListener('submit', async event => {
@@ -341,6 +347,7 @@
    const value = Number(form.elements.valor.value);
    const day = form.elements.data.value;
    const reference = form.querySelector('#payment-reference').value.trim();
+   const bank = form.querySelector('#payment-bank').value.trim();
    const parentField = table === 'pagamentos' ? 'viagem_id' : 'pendencia_id';
    const parent = table === 'pagamentos' ? form.elements.viagem_id.value : state.parentId;
    if (!Number.isFinite(value) || value <= 0 || !day || !parent) throw Error('Confira a origem, a data e o valor do pagamento.');
@@ -382,7 +389,7 @@
     }
    }
    const data = { ...cleanRecord(old), ...auditStamp(old), ...proof, id: state.id, [parentField]: parent,
-    valor: value, data: day, forma: form.elements.forma.value, referencia_pagamento: reference, recibo_digital: digital || cash };
+    valor: value, data: day, forma: form.elements.forma.value, referencia_pagamento: reference, banco_pagamento: bank, recibo_digital: digital || cash };
    state.expected = editing ? recordVersions.get(table + ':' + state.id) : 0;
    const changes = [{ kind: table, id: state.id, op: 'upsert', version: state.expected, data }];
    if (table === 'pagamentos') {
@@ -423,7 +430,7 @@
    [11, 'Emitido em ' + new Date(r.emitido_em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })],
    [11, 'Motorista: ' + (r.motorista || '—')], [11, 'Origem: ' + (r.descricao || r.origem_id || '—')],
    [11, 'Valor de origem: ' + money(r.valor_total)], [14, 'Valor recebido: ' + money(r.valor)],
-   [11, 'Forma de pagamento: ' + (r.forma || '—')], [11, r.referencia ? 'Referência: ' + r.referencia : '']
+   [11, 'Forma de pagamento: ' + (r.forma || '—')], [11, r.banco ? 'Banco: ' + r.banco : ''], [11, r.referencia ? 'Referência: ' + r.referencia : '']
   ];
   const lines = rows.flatMap(([size, value]) => (String(value || '').match(/.{1,73}(?:\s|$)|.{1,73}/gu) || []).map(line => [size, line.trim()]));
   const pages = [];
