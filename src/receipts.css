@@ -1,0 +1,29 @@
+.frota-driver-trip{display:grid;gap:12px;padding:14px;border:1px solid var(--gold,#ffd54a);border-radius:14px;background:var(--card);min-width:0}
+.frota-driver-trip .head,.frota-driver-trip p{margin:0;min-width:0;overflow-wrap:anywhere}
+.frota-driver-trip .head{align-items:flex-start;gap:12px}
+.frota-driver-trip .driver-icon{width:17px;height:17px;margin-right:5px;vertical-align:-3px}
+.frota-trip-summary{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:5px;align-items:stretch}
+.frota-trip-summary strong{display:flex;align-items:center;justify-content:center;gap:3px;text-align:center;font-size:clamp(.82rem,3.45vw,1.1rem);font-weight:800;line-height:1.16;border:1px solid var(--gold,#ffd54a);padding:7px 4px;border-radius:8px;overflow-wrap:anywhere;min-width:0}
+.frota-trip-summary strong:first-child{white-space:nowrap;font-variant-numeric:tabular-nums}
+.frota-trip-summary svg{flex:none;margin-right:0!important}
+.frota-trip-summary .done{color:#85e5a8;border-color:#5bc888;background:#143524}
+.frota-trip-summary .pending{color:#ffc480;border-color:#f3a041;background:#432610}
+.frota-trip-summary .active{color:#a3d5ff;border-color:#69bafa;background:#102e48}
+body.light .frota-trip-summary .done{color:#17673a;background:#e5f6e9;border-color:#298451}
+body.light .frota-trip-summary .pending{color:#884107;background:#fff1de;border-color:#ab5b10}
+body.light .frota-trip-summary .active{color:#185084;background:#e9f4ff;border-color:#2667a0}
+.frota-trip-actions,.frota-receipt-list{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.frota-trip-actions button,.frota-receipt-viewer .foot>*{min-height:44px}
+.frota-ocr{min-width:0;border:1px solid var(--gold,#ffd54a);border-radius:10px;padding:12px}
+.frota-ocr label{display:block;margin:.45rem 0}
+.frota-ocr input,.frota-ocr select{max-width:100%;width:100%;box-sizing:border-box}
+.frota-ocr pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:13rem;overflow:auto}
+.frota-ocr [data-scan-proof]{margin-top:8px}
+.frota-ocr [hidden]{display:none!important}
+.frota-receipt-overlay{z-index:1000}
+.frota-receipt-viewer{width:min(960px,96vw);max-width:96vw}
+.frota-receipt-viewer h2{overflow-wrap:anywhere}
+.frota-receipt-viewer .foot{flex-wrap:wrap}
+.frota-receipt-scroll{overflow:auto;max-height:60vh;overscroll-behavior:contain}
+.frota-receipt-scroll img{display:block;width:100%;height:auto;object-fit:contain;margin:auto}
+@media(max-width:370px){.frota-trip-summary .driver-icon,.frota-trip-summary strong:first-child span{display:none}.frota-driver-trip{padding:9px}.frota-trip-summary strong{font-size:.8rem}}
