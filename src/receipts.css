@@ -44,3 +44,30 @@ body.light .frota-trip-summary .active{color:#185084;background:#e9f4ff;border-c
 .frota-receipt-scroll{overflow:auto;max-height:60vh;overscroll-behavior:contain}
 .frota-receipt-scroll img{display:block;width:100%;height:auto;object-fit:contain;margin:auto}
 
+
+/* A faixa de valor, tipo e situação ocupa uma linha própria nos cartões do administrador. */
+.trip-card.trip-card-admin > .trip-card-payment.frota-trip-summary {
+ grid-column: 2 / -1;
+ grid-row: 2;
+ display: flex;
+ flex-flow: row wrap;
+ justify-content: flex-start;
+ align-items: center;
+ width: auto;
+ gap: 5px;
+}
+.trip-card.trip-card-admin { grid-template-columns: 42px minmax(105px,1.25fr) minmax(105px,1.1fr) minmax(210px,2.65fr) minmax(104px,1fr); }
+.trip-card.trip-card-admin > .trip-card-action { grid-column: 5; }
+.trip-card.trip-card-admin > .trip-card-payment.frota-trip-summary > strong {
+ max-width: 100%;
+ padding: 5px 7px;
+ font-size: clamp(.72rem, 2.8vw, .92rem);
+ text-align: center;
+}
+@media (max-width: 1050px) {
+ .trip-card.trip-card-admin { grid-template-columns: 35px minmax(0,1fr); }
+ .trip-card.trip-card-admin > .trip-card-journey { grid-column: 1 / -1; grid-row: 2; }
+ .trip-card.trip-card-admin > .trip-card-metrics { grid-column: 1 / -1; grid-row: 3; }
+ .trip-card.trip-card-admin > .trip-card-payment.frota-trip-summary { grid-column: 1 / -1; grid-row: 4; }
+ .trip-card.trip-card-admin > .trip-card-action { grid-column: 1 / -1; grid-row: 5; }
+}
