@@ -445,9 +445,21 @@ body.light #main .panel,body.light #main .card,body.light .perf-shell{box-shadow
 
 .weekly-settlement-details { margin: 12px 0; }
 .weekly-settlement-details > summary { cursor: pointer; color: var(--gold); font-weight: 700; padding: 8px 0; }
-.weekly-settlement-chart { display: grid; gap: 6px; margin: 12px 0; }
-.weekly-settlement-chart > div { display: grid; grid-template-columns: 65px minmax(0,1fr) minmax(55px,auto); gap: 8px; align-items: center; }
-.weekly-settlement-chart meter { width: 100%; accent-color: var(--gold); }
+.finance-tabs { margin-top: 22px; flex-wrap: nowrap; overflow-x: auto; padding: 2px; }
+.finance-tabs > .tab { flex: 0 0 auto; white-space: nowrap; }
+.finance-tabs-divider { flex: 0 0 1px; align-self: stretch; background: var(--line); margin: 5px 3px; }
+.weekly-chart-layout { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: center; margin: 10px 0 14px; }
+.weekly-settlement-chart { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 4px; }
+.weekly-day { display: grid; grid-template-rows: 74px auto auto auto; gap: 3px; text-align: center; font-size: .75rem; overflow-wrap: anywhere; }
+.weekly-day-plot { position: relative; border-bottom: 1px solid var(--line); }
+.weekly-day-bar { position: absolute; inset-inline: 25%; bottom: 0; background: #56916e; border-radius: 3px 3px 0 0; }
+.weekly-day-above .weekly-day-bar { background: #d9a826; }
+.weekly-day-target { position: absolute; inset-inline: 12%; border-top: 2px dashed currentColor; }
+.weekly-chart-summary { display: grid; gap: 4px; border-inline-start: 1px solid var(--line); padding-inline-start: 12px; font-size: .85rem; }
+@media (max-width: 640px) {
+ .weekly-chart-layout { grid-template-columns: minmax(0,1fr); }
+ .weekly-chart-summary { border-inline-start: 0; border-top: 1px solid var(--line); padding: 8px 0 0; }
+}
 .weekly-settlement-table { overflow: auto; }
 .weekly-settlement-table table { width: 100%; border-collapse: collapse; font-size: .9rem; }
 .weekly-settlement-table th, .weekly-settlement-table td { text-align: left; vertical-align: top; padding: 6px; border-bottom: 1px solid var(--line); }
