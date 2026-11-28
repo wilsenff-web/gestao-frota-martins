@@ -411,3 +411,33 @@ body.light #main .panel,body.light #main .card,body.light .perf-shell{box-shadow
  .perf-week-controls button{flex:1 1 130px}
  .perf-view-controls button{flex:1 1 0}
 }
+
+
+.driver-yield .metric-chart {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
+ gap: 16px;
+ padding: 0;
+}
+.driver-yield .metric-group { min-width: 0; }
+.driver-yield .metric-bars { gap: clamp(10px, 2vw, 22px); }
+.driver-yield .metric-caption b {
+ display: inline-block;
+ border: 1px solid var(--gold);
+ border-radius: 9px;
+ padding: 3px 8px;
+}
+.driver-yield-values { display: none; }
+@media (max-width: 760px) {
+ .driver-yield .metric-chart { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+ .driver-yield .metric-bars, .driver-yield .metric-scales { display: none; }
+ .driver-yield .metric-caption {
+  padding: 10px 12px;
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  text-align: left;
+ }
+ .driver-yield-values { display: grid; gap: 4px; margin: 6px 0; }
+ .driver-yield-values > div { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+ .driver-yield-values dd { margin: 0; font-weight: 650; }
+}
