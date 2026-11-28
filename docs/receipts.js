@@ -134,7 +134,51 @@
  tripDetails = function (recordId) {
   existingDetails(recordId);
   const dialog = document.querySelector('#modal .modal');
-  if (dialog && receiptDocuments(get('viagens', recordId)).length) dialog.querySelector('.head')?.insertAdjacentHTML('afterend', '<div class="frota-trip-actions">' + receiptButton('trip', recordId, 'Ver recibo') + '</div>');
+  if (!dialog) return;
+  const trip = get('viagens', recordId);
+  const documents = receiptDocuments(trip);
+  const hasDigital = documents.some(([kind]) => kind === 'digital');
+  const hasPaymentFile = documents.some(([kind]) => kind === 'pagamentos');
+  const proof = dialog.querySelector('.detail-proof');
+  const actions = proof?.querySelector('.detail-proof-actions');
+  const missing = proof?.querySelector('[data-trip-proof-missing]');
+  const attach = actions?.querySelector('[data-act="attachproof"]');
+  const confirm = actions?.querySelector('[data-act="paytrip"]');
+
+  if (hasDigital || hasPaymentFile) {
+   if (missing) missing.textContent = hasDigital ? 'Recibo digital registrado.' : 'Comprovante do pagamento registrado.';
+   attach?.remove();
+   actions?.insertAdjacentHTML('afterbegin', receiptButton('trip', recordId, 'Ver recibo'));
+   if (proof) proof.open = true;
+  } else if (attach) {
+   proof.open = true;
+   attach.textContent = 'Anexar original';
+   if (confirm && !isDriver()) {
+    const scan = document.createElement('button');
+    scan.type = 'button';
+    scan.className = 'btn';
+    scan.textContent = 'Escanear comprovante';
+    scan.addEventListener('click', () => {
+     paymentModal(recordId);
+     const form = document.querySelector('#modal #form[data-receipt-payment="pagamentos"]');
+     const mode = form?.querySelector('#payment-proof-mode');
+     if (!mode) return;
+     mode.value = 'digital';
+     mode.dispatchEvent(new Event('change'));
+     form.querySelector('#payment-proof-file')?.focus();
+    });
+    actions.prepend(scan);
+   }
+  }
+  if (confirm && proof) {
+   const payment = document.createElement('div');
+   payment.className = 'frota-trip-actions';
+   payment.append(confirm);
+   proof.after(payment);
+  }
+  if (documents.length && !(hasDigital || hasPaymentFile)) {
+   dialog.querySelector('.head')?.insertAdjacentHTML('afterend', '<div class="frota-trip-actions">' + receiptButton('trip', recordId, 'Ver recibo') + '</div>');
+  }
  };
 
  function pendingReceipts() {
