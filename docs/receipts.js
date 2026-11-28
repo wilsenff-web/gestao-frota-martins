@@ -475,24 +475,48 @@
    const code = c.charCodeAt(0);
    return code > 255 || code < 32 ? '3f' : code.toString(16).padStart(2, '0');
   }).join('');
+  const normalize = value => String(value ?? '').normalize('NFC').toLowerCase().replace(/\s+/g, '');
+  const known = [date(r.data), money(r.valor), r.referencia].filter(Boolean).map(normalize);
+  const revised = String(r.texto_revisado || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+  const fields = /^(?:data(?: do pagamento)?|valor(?: da transferência| do pagamento| recebido)?|referência)\s*:?\s*$/iu;
+  const references = /^(?:data(?: do pagamento)?|valor(?: da transferência| do pagamento| recebido)?|referência)\s*:\s*/iu;
+  const notes = revised.filter((line, index) => {
+   if (fields.test(line) && known.includes(normalize(revised[index + 1]))) return false;
+   return !known.includes(normalize(line.replace(references, '')));
+  });
   const rows = [
-   [19, r.empresa], [16, 'Recibo de pagamento'], [10, r.numero], [11, 'Pagamento em ' + date(r.data)],
-   [11, 'Emitido em ' + new Date(r.emitido_em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })],
-   [11, 'Motorista: ' + (r.motorista || '—')], [11, 'Origem: ' + (r.descricao || r.origem_id || '—')],
-   [11, 'Valor de origem: ' + money(r.valor_total)], [14, 'Valor recebido: ' + money(r.valor)],
-   [11, 'Forma de pagamento: ' + (r.forma || '—')], [11, r.banco ? 'Banco: ' + r.banco : ''], [11, r.referencia ? 'Referência: ' + r.referencia : ''],
-   ...(r.texto_revisado ? [[12, 'Dados revisados do comprovante'], [11, r.texto_revisado]] : [])
+   [18, r.empresa], [13, 'Recibo de pagamento'], [9, r.numero],
+   [9, 'Emitido em ' + new Date(r.emitido_em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })],
+   [17, 'Valor recebido: ' + money(r.valor)],
+   [10, 'Motorista: ' + (r.motorista || '—')], [10, 'Trajeto: ' + (r.descricao || r.origem_id || '—')],
+   [10, 'Pagamento em ' + date(r.data) + ' · ' + (r.forma || '—')],
+   [10, 'Valor de origem: ' + money(r.valor_total)],
+   ...(r.banco ? [[10, 'Banco: ' + r.banco]] : []),
+   ...(r.referencia ? [[10, 'Referência: ' + r.referencia]] : []),
+   ...(notes.length ? [[11, 'Dados revisados do comprovante'], ...notes.map(line => [9, line])] : [])
   ];
-  const lines = rows.flatMap(([size, value]) => (String(value || '').match(/.{1,73}(?:\s|$)|.{1,73}/gu) || []).map(line => [size, line.trim()]));
-  const pages = [];
-  for (let begin = 0; begin < lines.length; begin += 29) pages.push(lines.slice(begin, begin + 29));
+  const lines = rows.flatMap(([size, value]) => {
+   const columns = Math.floor(500 / (size * 0.72));
+   return (String(value || '').match(new RegExp('.{1,' + columns + '}(?:\\s|$)|.{1,' + columns + '}', 'gu')) || [])
+    .map(line => [size, line.trim()]);
+  });
+  const pages = [[]];
+  let top = 773;
+  for (const [size, line] of lines) {
+   if (top < 48) {
+    pages.push([]);
+    top = 773;
+   }
+   pages.at(-1).push([size, line, top]);
+   top -= size + (size >= 13 ? 9 : 4);
+  }
   const objects = [
    '<< /Type /Catalog /Pages 2 0 R >>',
    '<< /Type /Pages /Count ' + pages.length + ' /Kids [' + pages.map((_, i) => (4 + 2*i) + ' 0 R').join(' ') + '] >>',
    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>'
   ];
   for (const [i, page] of pages.entries()) {
-   const stream = '0.9 0.67 0.05 rg 46 794 503 4 re f\n0 0 0 rg\n' + page.map(([size, line], row) => 'BT /F1 ' + size + ' Tf 46 ' + (761 - row * 24) + ' Td <' + western(line) + '> Tj ET').join('\n') + '\n';
+   const stream = '0.9 0.67 0.05 rg 46 794 503 4 re f\n0 0 0 rg\n' + page.map(([size, line, y]) => 'BT /F1 ' + size + ' Tf 46 ' + y + ' Td <' + western(line) + '> Tj ET').join('\n') + '\n';
    objects.push('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents ' + (5 + 2*i) + ' 0 R >>');
    objects.push('<< /Length ' + stream.length + ' >>\nstream\n' + stream + 'endstream');
   }
