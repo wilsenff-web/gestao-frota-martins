@@ -127,6 +127,29 @@ const vehicleCategory=car=>car?.categoria==='Particular'?'Particular':'Trabalho'
 const categoryForTrip=trip=>vehicleCategory(get('veiculos',trip.veiculo_id));
 
 // Prévia administrativa, sem lançamento automático ou alteração de viagens históricas.
+function weeklySettlementDetails(start, trips, dayOf, dailyCost, base, km, rate) {
+ const names = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+ const days = names.map((name,index)=>{
+  const day=new Date(start+'T12:00:00');
+  day.setDate(day.getDate()+index);
+  const key=[day.getFullYear(),String(day.getMonth()+1).padStart(2,'0'),String(day.getDate()).padStart(2,'0')].join('-');
+  const entries=trips.filter(v=>dayOf(v)===key);
+  return {name,key,entries,km:entries.reduce((sum,v)=>sum+tripKm(v),0),daily:dailyCost(entries)};
+ });
+ const formatKm=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:2})+' km';
+ const maximum=Math.max(1,...days.map(day=>day.km));
+ const allowance=rate>0?base/rate:0, excess=Math.max(0,km-allowance);
+ const chart=days.map(day=>`<div><span>${esc(day.name.slice(0,3))}</span><meter min="0" max="${maximum}" value="${day.km}" aria-label="${esc(day.name+': '+formatKm(day.km))}"></meter><strong>${formatKm(day.km)}</strong></div>`).join('');
+ const table=days.map(day=>{
+  const vehicles=[...new Set(day.entries.map(tripVehicleLabel))].join(', ');
+  const list=day.entries.map(v=>`<li>${esc(tripVehicleLabel(v))} · ${esc([v.origem,v.destino].filter(Boolean).join(' → ')||'Trajeto não informado')} · ${formatKm(tripKm(v))}</li>`).join('');
+  const label=esc(day.name+' · '+date(day.key));
+  return `<tr><td>${list?`<details><summary>${label}</summary><ul>${list}</ul></details>`:label}</td><td>${formatKm(day.km)}</td><td>${esc(vehicles||'—')}</td><td>${day.entries.length?money(day.daily):'—'}</td></tr>`;
+ }).join('');
+ const calculation=rate>0?`<p><strong>Conta do fechamento</strong><br>${formatKm(km)} rodados · ${formatKm(allowance)} de franquia.<br><strong>${formatKm(excess)} excedentes</strong>${excess===0?' (dentro da franquia)':''}.<br>${formatKm(excess)} × ${money(rate)}/km = ${money(excess*rate)} de excedente.<br>Diárias de ${money(base)} + excedente de ${money(excess*rate)} = <strong>${money(base+excess*rate)} estimados</strong>.</p>`:'';
+ return `<details class="weekly-settlement-details"><summary>Ver detalhes da semana</summary><div class="weekly-settlement-chart" aria-label="Quilômetros rodados por dia">${chart}</div><div class="weekly-settlement-table"><table><thead><tr><th>Dia</th><th>KM rodados</th><th>Veículo</th><th>Diária aplicada</th></tr></thead><tbody>${table}</tbody><tfoot><tr><th>Total</th><td>${formatKm(km)}</td><td> </td><td>${money(base)}</td></tr></tfoot></table></div>${calculation}<p class="muted">O excedente é calculado no total da semana, com compensação entre os dias.</p></details>`;
+}
+
 function weeklySettlementPreview(){
  if(typeof isDriver==='function'&&isDriver())return '';
  const reference=new Date(agoraLocal().data+'T12:00:00');
@@ -139,13 +162,14 @@ function weeklySettlementPreview(){
   const mine=trips.filter(v=>v.motorista_id===m.id),rate=Number(m.excedente_valor_km);
   if(!mine.length)return null;
   const missing=mine.filter(v=>v.modalidade_diaria==='combinada'&&!(Number(v.valor)>0));
-  const base=mine.reduce((acc,v)=>acc+(v.modalidade_diaria==='combinada'?Math.max(0,Number(v.valor)||0):Math.max(0,Number(m.diaria_padrao)||0)*(v.modalidade_diaria==='meia'?0.5:1)),0);
+  const dailyCost=entries=>entries.reduce((acc,v)=>acc+(v.modalidade_diaria==='combinada'?Math.max(0,Number(v.valor)||0):Math.max(0,Number(m.diaria_padrao)||0)*(v.modalidade_diaria==='meia'?0.5:1)),0);
+  const base=dailyCost(mine);
   const km=mine.reduce((acc,v)=>acc+tripKm(v),0);
   const allowance=rate>0?base/rate:0,excess=rate>0?Math.max(0,km-allowance):0;
   const due=rate>0?base+excess*rate:0;
-  return {m,mine,missing,rate,base,km,allowance,excess,due};
+  return {m,mine,missing,rate,base,km,allowance,excess,due,dailyCost};
  }).filter(Boolean);
- const rows=groups.map(g=>`<div class="panel" style="margin-top:12px"><strong>${esc(g.m.nome)}</strong><p class="muted">${g.mine.length} diária(s) · ${g.km.toLocaleString('pt-BR')} KM rodados</p>${g.rate>0?`<div class="detail-grid">${detailCell('Diárias da semana',money(g.base))}${detailCell('Franquia semanal',g.allowance.toLocaleString('pt-BR',{maximumFractionDigits:1})+' KM')}${detailCell('KM excedentes',g.excess.toLocaleString('pt-BR',{maximumFractionDigits:1})+' KM')}${detailCell('Excedente estimado',money(g.excess*g.rate))}${detailCell('Total estimado',money(g.due))}</div>`:'<p class="muted">Cadastre a tarifa por KM deste motorista para calcular o fechamento.</p>'}${g.missing.length?`<p class="muted">Aguardando valor combinado em ${g.missing.length} viagem(ns). Total provisório; não fechar ainda.</p>`:''}${g.missing.length?'':'<button class="btn" data-discount-driver="'+esc(g.m.id)+'">Desconto em pendência deste motorista</button>'}</div>`).join('');
+ const rows=groups.map(g=>`<div class="panel" style="margin-top:12px"><strong>${esc(g.m.nome)}</strong><p class="muted">${g.mine.length} diária(s) · ${g.km.toLocaleString('pt-BR')} KM rodados</p>${g.rate>0?`<div class="detail-grid">${detailCell('Diárias da semana',money(g.base))}${detailCell('Franquia semanal',g.allowance.toLocaleString('pt-BR',{maximumFractionDigits:1})+' KM')}${detailCell('KM excedentes',g.excess.toLocaleString('pt-BR',{maximumFractionDigits:1})+' KM')}${detailCell('Excedente estimado',money(g.excess*g.rate))}${detailCell('Total estimado',money(g.due))}</div>`:'<p class="muted">Cadastre a tarifa por KM deste motorista para calcular o fechamento.</p>'}${g.missing.length?`<p class="muted">Aguardando valor combinado em ${g.missing.length} viagem(ns). Total provisório; não fechar ainda.</p>`:''}${weeklySettlementDetails(start,g.mine,v=>v.data_fim||v.data,g.dailyCost,g.base,g.km,g.rate)}${g.missing.length?'':'<button class="btn" data-discount-driver="'+esc(g.m.id)+'">Desconto em pendência deste motorista</button>'}</div>`).join('');
  return `<div class="panel" style="margin-top:24px"><h2>Prévia do fechamento semanal · segunda a sábado</h2><p class="muted">${date(start)} a ${date(end)} · Compensação de KM entre as diárias da mesma semana e do mesmo motorista. Não gera cobrança nem baixa automática.</p>${rows||'<p class="muted">Nenhuma viagem de trabalho concluída nesta semana.</p>'}</div>`;
 }
 
