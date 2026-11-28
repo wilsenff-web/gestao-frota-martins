@@ -96,6 +96,7 @@
     +detailCell('Diárias da semana',money(base))
     +(rate ? detailCell('Franquia semanal',displayKm(allowance))+detailCell('KM excedentes',displayKm(excess))+detailCell('Excedente estimado',money(excess*rate))+detailCell('Total estimado',money(base+excess*rate)) : '')
     +'</div>'
+    +weeklySettlementDetails(start,mine,tripDay,entries=>aggregateDaily(entries,driver),base,km,rate)
     +(!rate ? '<p class="muted">Cadastre a tarifa por KM deste motorista para calcular o excedente.</p>' : '')
     +(missing.length ? '<p class="muted">Aguardando valor combinado em '+missing.length+' viagem(ns). Total provisório.</p>' : '<button type="button" class="btn" data-discount-driver="'+esc(driver.id)+'">Desconto em pendência deste motorista</button>')+'</div>';
   }).join('');

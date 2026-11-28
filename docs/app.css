@@ -441,3 +441,14 @@ body.light #main .panel,body.light #main .card,body.light .perf-shell{box-shadow
  .driver-yield-values > div { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
  .driver-yield-values dd { margin: 0; font-weight: 650; }
 }
+
+
+.weekly-settlement-details { margin: 12px 0; }
+.weekly-settlement-details > summary { cursor: pointer; color: var(--gold); font-weight: 700; padding: 8px 0; }
+.weekly-settlement-chart { display: grid; gap: 6px; margin: 12px 0; }
+.weekly-settlement-chart > div { display: grid; grid-template-columns: 65px minmax(0,1fr) minmax(55px,auto); gap: 8px; align-items: center; }
+.weekly-settlement-chart meter { width: 100%; accent-color: var(--gold); }
+.weekly-settlement-table { overflow: auto; }
+.weekly-settlement-table table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.weekly-settlement-table th, .weekly-settlement-table td { text-align: left; vertical-align: top; padding: 6px; border-bottom: 1px solid var(--line); }
+.weekly-settlement-table summary { cursor: pointer; }
