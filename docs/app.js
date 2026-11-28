@@ -71,10 +71,10 @@ function weeklyDriverProgressChart(){
  base.setDate(base.getDate()-weekday);
  const dates=Array.from({length:6},(_,i)=>{const d=new Date(base);d.setDate(base.getDate()+i);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')});
  const end=dates[5],work=db.viagens.filter(v=>v.status==='Concluída'&&usage(v)==='Viagem de trabalho'),weekly=work.filter(v=>v.data>=dates[0]&&v.data<=end);
- const ids=new Set(work.map(v=>v.id)),payments=db.pagamentos.filter(p=>p.data>=dates[0]&&p.data<=end&&ids.has(p.viagem_id));
- const drivers=db.motoristas.filter(m=>weekly.some(v=>v.motorista_id===m.id)||payments.some(p=>work.some(v=>v.id===p.viagem_id&&v.motorista_id===m.id)));
+ const ids=new Set(weekly.map(v=>v.id)),payments=db.pagamentos.filter(p=>ids.has(p.viagem_id));
+ const drivers=db.motoristas.filter(m=>weekly.some(v=>v.motorista_id===m.id));
  if(!drivers.length)return '<h2>Evolução semanal dos motoristas</h2><div class="panel"><p class="muted">Ainda não há viagens de trabalho ou pagamentos vinculados nesta semana.</p></div>';
- const items=drivers.map(m=>{const mine=weekly.filter(v=>v.motorista_id===m.id),tripIds=new Set(work.filter(v=>v.motorista_id===m.id).map(v=>v.id));return {nome:m.nome||'Motorista',km:mine.reduce((a,v)=>a+tripKm(v),0),recebido:payments.filter(p=>tripIds.has(p.viagem_id)).reduce((a,p)=>a+(+p.valor||0),0)}});
+ const items=drivers.map(m=>{const mine=weekly.filter(v=>v.motorista_id===m.id),tripIds=new Set(mine.map(v=>v.id));return {nome:m.nome||'Motorista',km:mine.reduce((a,v)=>a+tripKm(v),0),recebido:payments.filter(p=>tripIds.has(p.viagem_id)).reduce((a,p)=>a+(+p.valor||0),0)}});
  const maxKm=Math.max(1,...items.map(x=>x.km)),maxMoney=Math.max(1,...items.map(x=>x.recebido));
  const width=1000,slot=width/items.length,baseline=262,limit=184;
  const column=(x,h,w,color,label)=>{const y=baseline-h;return '<g><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+color+'"/><path d="M'+x+' '+y+' l7 -8 h'+w+' l-7 8z" fill="'+(color==='#e7b200'?'#ffd850':'#49c58d')+'"/><path d="M'+(x+w)+' '+y+' l7 -8 v'+h+' l-7 8z" fill="'+(color==='#e7b200'?'#aa8000':'#146b4c')+'"/><text x="'+(x+w/2)+'" y="'+Math.max(17,y-14)+'" text-anchor="middle" fill="currentColor" font-size="15" font-weight="650">'+label+'</text></g>'};
@@ -83,7 +83,7 @@ function weeklyDriverProgressChart(){
  const short=d.nome.length>21?d.nome.slice(0,19)+'…':d.nome;
  return column(x1,h1,w,'#e7b200',d.km.toLocaleString('pt-BR')+' KM')+column(x2,h2,w,'#239c68',money(d.recebido))+'<text x="'+mid+'" y="310" text-anchor="middle" fill="currentColor" font-size="16" font-weight="650">'+esc(short)+'</text>'}).join('');
  const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 326" role="img" aria-label="Comparativo semanal de KM e recebimentos por motorista" style="display:block;width:100%;height:auto;overflow:visible;color:var(--text,#eee)"><path d="M15 263 H985 L973 277 H3 Z" fill="var(--chart-floor,#514a3d)"/><path d="M3 277 H973 V284 H3 Z" fill="var(--chart-front,#373026)"/>'+bars+'</svg>';
- return '<h2>Evolução semanal dos motoristas</h2><div class="panel"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><strong>KM rodados e pagamentos recebidos</strong><p class="muted">Semana de '+date(dates[0])+' a '+date(end)+'</p></div><div class="muted" style="font-size:12px">🟨 KM rodados &nbsp; 🟩 Recebido (R$)</div></div><div style="width:100%;min-width:0;overflow:hidden">'+svg+'</div><p class="muted" style="font-size:11px">KM de trabalho concluídos na semana; pagamentos lançados na semana e vinculados a viagens de trabalho. Escalas independentes. Acerto de diárias ainda não integrado.</p></div>';
+ return '<h2>Evolução semanal dos motoristas</h2><div class="panel"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><strong>KM rodados e pagamentos recebidos</strong><p class="muted">Semana de '+date(dates[0])+' a '+date(end)+'</p></div><div class="muted" style="font-size:12px">🟨 KM rodados &nbsp; 🟩 Recebido (R$)</div></div><div style="width:100%;min-width:0;overflow:hidden">'+svg+'</div><p class="muted" style="font-size:11px">Quilômetros e pagamentos vinculados às viagens de trabalho da semana. Pagamentos lançados em outra data aparecem na semana da viagem. Escalas independentes. Acerto de diárias ainda não integrado.</p></div>';
 }
 let performancePeriod='weekly',performanceView='drivers',performanceWeekOffset=0;
 function performanceDashboard(){
