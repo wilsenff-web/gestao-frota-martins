@@ -137,24 +137,39 @@ function weeklySettlementDetails(start, trips, dayOf, dailyCost, base, km, rate)
   return {name,key,entries,km:entries.reduce((sum,v)=>sum+tripKm(v),0),daily:dailyCost(entries)};
  });
  const formatKm=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:2})+' km';
- // A referência diária usa a mesma diária aplicada no fechamento, inclusive quando há troca de veículo.
- const dailyTarget=day=>rate>0&&day.daily>0?day.daily/rate:null;
- const maximum=Math.max(1,...days.map(day=>Math.max(day.km,dailyTarget(day)??0)));
+ const series=days.flatMap(day=>{
+  const byVehicle=new Map();
+  for(const trip of day.entries){
+   const vehicleId=trip.veiculo_id||'';
+   if(!byVehicle.has(vehicleId)){
+    const vehicle=get('veiculos',vehicleId);
+    const target=Number(vehicle.meta_diaria_km);
+    byVehicle.set(vehicleId,{plate:vehicle.placa||'Veículo',target:Number.isFinite(target)&&target>0?target:null,km:0});
+   }
+   byVehicle.get(vehicleId).km+=tripKm(trip);
+  }
+  return byVehicle.size
+   ? [...byVehicle.values()].map(vehicle=>({...vehicle,name:day.name,showPlate:byVehicle.size>1}))
+   : [{name:day.name,km:0,target:null,noTrip:true}];
+ });
+ const maximum=Math.max(1,...series.map(point=>Math.max(point.km,point.target??0)));
  const percentage=value=>(100*value/maximum).toFixed(3)+'%';
  const allowance=rate>0?base/rate:0, excess=Math.max(0,km-allowance);
- const chart=days.map(day=>{
-  const target=dailyTarget(day);
-  const difference=target===null?0:day.km-target;
-  const above=difference>=0.005;
-  const label=day.name+': '+formatKm(day.km)+(target===null?'':'; referência '+formatKm(target)+(above?'; acima da referência em '+formatKm(difference):''));
-  return `<div class="weekly-day${above?' weekly-day-above':''}" role="img" aria-label="${esc(label)}">
+ const chart=series.map(point=>{
+  const {name,km,target,plate,showPlate,noTrip}=point;
+  const above=target===null?0:Math.max(0,km-target);
+  const goalLabel=noTrip?'Sem viagem':target===null?'Meta não cadastrada':'Meta '+formatKm(target);
+  const label=[name,showPlate?plate:'',goalLabel,formatKm(km)+' rodados',above>=0.005?'acima da meta em '+formatKm(above):''].filter(Boolean).join(' · ');
+  return `<div class="weekly-day" role="img" aria-label="${esc(label)}">
+   <span class="weekly-day-goal" aria-hidden="true">${showPlate?'<strong>'+esc(plate)+'</strong><br>':''}${goalLabel}</span>
    <div class="weekly-day-plot" aria-hidden="true">
-    <span class="weekly-day-bar" style="height:${percentage(day.km)}"></span>
+    <span class="weekly-day-bar" style="height:${percentage(km-above)}"></span>
+    ${above>0?`<span class="weekly-day-over" style="bottom:${percentage(target)};height:${percentage(above)}"></span>`:''}
     ${target===null?'':`<span class="weekly-day-target" style="bottom:${percentage(target)}"></span>`}
    </div>
-   <strong aria-hidden="true">${day.name.slice(0,3)}</strong>
-   <span aria-hidden="true">${formatKm(day.km)}</span>
-   ${above?`<strong aria-hidden="true">+${formatKm(difference)}</strong>`:''}
+   <strong aria-hidden="true">${name.slice(0,3)}</strong>
+   <span aria-hidden="true">${formatKm(km)}</span>
+   ${above>=0.005?`<strong aria-hidden="true">+${formatKm(above)}</strong>`:''}
   </div>`;
  }).join('');
  const table=days.map(day=>{
@@ -164,7 +179,7 @@ function weeklySettlementDetails(start, trips, dayOf, dailyCost, base, km, rate)
   return `<tr><td>${list?`<details><summary>${label}</summary><ul>${list}</ul></details>`:label}</td><td>${formatKm(day.km)}</td><td>${esc(vehicles||'—')}</td><td>${day.entries.length?money(day.daily):'—'}</td></tr>`;
  }).join('');
  const calculation=rate>0?`<p><strong>Conta do fechamento</strong><br>${formatKm(km)} rodados · ${formatKm(allowance)} de franquia.<br><strong>${formatKm(excess)} excedentes</strong>${excess===0?' (dentro da franquia)':''}.<br>${formatKm(excess)} × ${money(rate)}/km = ${money(excess*rate)} de excedente.<br>Diárias de ${money(base)} + excedente de ${money(excess*rate)} = <strong>${money(base+excess*rate)} estimados</strong>.</p>`:'';
- return `<details class="weekly-settlement-details"><summary>Ver detalhes da semana</summary><div class="weekly-chart-layout"><div><div class="weekly-settlement-chart" role="group" aria-label="Quilômetros rodados por dia">${chart}</div>${days.some(day=>dailyTarget(day)!==null)?'<small class="muted">Traço em cada coluna: referência de KM conforme a diária aplicada.</small>':''}</div>${rate>0?`<div class="weekly-chart-summary"><strong>Meta da semana</strong><span>${formatKm(allowance)} de franquia</span><span>${formatKm(km)} rodados</span><strong>${formatKm(excess)} excedentes</strong><span>${money(excess*rate)} de excedente estimado</span></div>`:''}</div><div class="weekly-settlement-table"><table><thead><tr><th>Dia</th><th>KM rodados</th><th>Veículo</th><th>Diária aplicada</th></tr></thead><tbody>${table}</tbody><tfoot><tr><th>Total</th><td>${formatKm(km)}</td><td> </td><td>${money(base)}</td></tr></tfoot></table></div>${calculation}<p class="muted">O excedente é calculado no total da semana, com compensação entre os dias.</p></details>`;
+ return `<details class="weekly-settlement-details"><summary>Ver detalhes da semana</summary><div class="weekly-chart-layout"><div><div class="weekly-settlement-chart" role="group" aria-label="Quilômetros rodados por dia e veículo" style="--weekly-columns:${series.length}">${chart}</div>${series.some(point=>point.target!==null)?'<small class="muted">Traço pontilhado: meta diária cadastrada para o veículo.</small>':''}</div>${rate>0?`<div class="weekly-chart-summary"><strong>Meta da semana</strong><span>${formatKm(allowance)} de franquia</span><span>${formatKm(km)} rodados</span><strong>${formatKm(excess)} excedentes</strong><span>${money(excess*rate)} de excedente estimado</span></div>`:''}</div><div class="weekly-settlement-table"><table><thead><tr><th>Dia</th><th>KM rodados</th><th>Veículo</th><th>Diária aplicada</th></tr></thead><tbody>${table}</tbody><tfoot><tr><th>Total</th><td>${formatKm(km)}</td><td> </td><td>${money(base)}</td></tr></tfoot></table></div>${calculation}<p class="muted">O excedente é calculado no total da semana, com compensação entre os dias.</p></details>`;
 }
 
 function weeklySettlementPreview(){

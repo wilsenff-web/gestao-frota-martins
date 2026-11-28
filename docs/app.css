@@ -449,11 +449,12 @@ body.light #main .panel,body.light #main .card,body.light .perf-shell{box-shadow
 .finance-tabs > .tab { flex: 0 0 auto; white-space: nowrap; }
 .finance-tabs-divider { flex: 0 0 1px; align-self: stretch; background: var(--line); margin: 5px 3px; }
 .weekly-chart-layout { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: center; margin: 10px 0 14px; }
-.weekly-settlement-chart { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 4px; }
-.weekly-day { display: grid; grid-template-rows: 74px auto auto auto; gap: 3px; text-align: center; font-size: .75rem; overflow-wrap: anywhere; }
+.weekly-settlement-chart { display: grid; grid-template-columns: repeat(var(--weekly-columns,6),minmax(54px,1fr)); gap: 4px; overflow-x: auto; }
+.weekly-day { display: grid; grid-template-rows: 3rem 74px auto auto auto; gap: 3px; text-align: center; font-size: .75rem; overflow-wrap: anywhere; }
 .weekly-day-plot { position: relative; border-bottom: 1px solid var(--line); }
 .weekly-day-bar { position: absolute; inset-inline: 25%; bottom: 0; background: #56916e; border-radius: 3px 3px 0 0; }
-.weekly-day-above .weekly-day-bar { background: #d9a826; }
+.weekly-day-goal { align-self: end; padding-bottom: 5px; }
+.weekly-day-over { position: absolute; inset-inline: 25%; background: #d9a826; border-radius: 3px 3px 0 0; }
 .weekly-day-target { position: absolute; inset-inline: 12%; border-top: 2px dashed currentColor; }
 .weekly-chart-summary { display: grid; gap: 4px; border-inline-start: 1px solid var(--line); padding-inline-start: 12px; font-size: .85rem; }
 @media (max-width: 640px) {

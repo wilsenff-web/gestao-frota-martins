@@ -51,6 +51,8 @@
   };
   input.addEventListener('input',preview);
   preview();
+  form.querySelector('.grid').insertAdjacentHTML('beforeend', '<div class="field wide"><label for="vehicle-daily-km-goal">Meta diária de KM</label><input class="control" id="vehicle-daily-km-goal" name="meta_diaria_km" type="number" min="0.01" step="0.01" aria-describedby="vehicle-km-goal-help"><small class="muted" id="vehicle-km-goal-help">Opcional. Referência para o gráfico de Pendências.</small></div>');
+  form.elements.meta_diaria_km.value = vehicle.meta_diaria_km ?? '';
   return result;
  };
 
